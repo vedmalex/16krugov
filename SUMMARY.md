@@ -4,4 +4,5 @@
 * [Предисловие](chapter1.md)
 * [Введение](vvedenie.md)
 * [Часть 1](chast-1.md)
+* [Часть 2](chast-2.md)
 
