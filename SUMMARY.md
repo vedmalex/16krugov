@@ -1,4 +1,4 @@
-# Summary
+# Table of contents
 
 * [Лучшие Круги](README.md)
 * [Предисловие](chapter1.md)
