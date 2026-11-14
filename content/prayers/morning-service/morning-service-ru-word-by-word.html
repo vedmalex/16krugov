@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Утренняя служба ISKCON (с пословным разбором и переводом)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #faf8f5;
+  --text: #2d2a26;
+  --header-bg: #f3ece2;
+  --card-bg: #ffffff;
+  --card-border: #e6ded4;
+  --accent: #b45309;
+  --accent-light: #fef3c7;
+  --verse-bg: #fffbf2;
+  --verse-border: #fcd34d;
+  --term-color: #92400e;
+  --muted: #6b7280;
+  --nav-bg: rgba(250, 248, 245, 0.95);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --link: #0284c7;
+  --link-hover: #0369a1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --text: #f4f4f5;
+    --header-bg: #27272a;
+    --card-bg: #202023;
+    --card-border: #3f3f46;
+    --accent: #f59e0b;
+    --accent-light: #451a03;
+    --verse-bg: #1f1d17;
+    --verse-border: #b45309;
+    --term-color: #fbbf24;
+    --muted: #a1a1aa;
+    --nav-bg: rgba(24, 24, 27, 0.95);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --link: #38bdf8;
+    --link-hover: #7dd3fc;
+  }
+}
+
+#t-light:checked ~ .page {
+  --bg: #faf8f5;
+  --text: #2d2a26;
+  --header-bg: #f3ece2;
+  --card-bg: #ffffff;
+  --card-border: #e6ded4;
+  --accent: #b45309;
+  --accent-light: #fef3c7;
+  --verse-bg: #fffbf2;
+  --verse-border: #fcd34d;
+  --term-color: #92400e;
+  --muted: #6b7280;
+  --nav-bg: rgba(250, 248, 245, 0.95);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --link: #0284c7;
+  --link-hover: #0369a1;
+}
+
+#t-dark:checked ~ .page {
+  --bg: #18181b;
+  --text: #f4f4f5;
+  --header-bg: #27272a;
+  --card-bg: #202023;
+  --card-border: #3f3f46;
+  --accent: #f59e0b;
+  --accent-light: #451a03;
+  --verse-bg: #1f1d17;
+  --verse-border: #b45309;
+  --term-color: #fbbf24;
+  --muted: #a1a1aa;
+  --nav-bg: rgba(24, 24, 27, 0.95);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --link: #38bdf8;
+  --link-hover: #7dd3fc;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans", "Noto Sans Devanagari", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 0;
+  margin: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+header.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--card-border);
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+}
+
+.controls-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-ctrl {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quick-nav {
+  position: sticky;
+  top: 48px;
+  z-index: 90;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--card-border);
+  padding: 8px 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  gap: 8px;
+  scrollbar-width: none;
+}
+.quick-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-nav a {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.quick-nav a:hover, .quick-nav a:active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 16px 80px 16px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin: 16px 0 8px 0;
+  color: var(--accent);
+}
+
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin: 28px 0 12px 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  color: var(--accent);
+  scroll-margin-top: 100px;
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 20px 0 8px 0;
+  color: var(--text);
+  scroll-margin-top: 100px;
+}
+
+p {
+  margin: 10px 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:visited {
+  color: var(--link);
+}
+
+a:hover, a:active {
+  color: var(--link-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+  text-decoration: underline;
+}
+
+p a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+blockquote {
+  background: var(--card-bg);
+  border-left: 4px solid var(--accent);
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  box-shadow: var(--shadow);
+}
+
+pre {
+  background: var(--verse-bg);
+  border: 1px solid var(--verse-border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 14px 0;
+  font-family: "Noto Serif", "Noto Serif Devanagari", Georgia, Cambria, "Times New Roman", serif;
+  font-size: 1.12rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+center, .align-center {
+  display: block;
+  background: var(--verse-bg);
+  border: 1px solid var(--verse-border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 14px 0;
+  font-family: "Noto Serif", "Noto Serif Devanagari", Georgia, Cambria, "Times New Roman", serif;
+  font-size: 1.12rem;
+  line-height: 1.65;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+sub {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--accent-light);
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-left: 2px;
+  display: inline-block;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.15em;
+}
+
+sup {
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+small {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+code {
+  font-family: inherit;
+}
+
+ul, ol {
+  padding-left: 20px;
+  margin: 12px 0;
+}
+
+li {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--card-border);
+  font-size: 0.95rem;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--term-color);
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--card-border);
+  margin: 24px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  box-shadow: var(--shadow);
+}
+
+th, td {
+  border: 1px solid var(--card-border);
+  padding: 8px 12px;
+}
+
+th {
+  background: var(--header-bg);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 100;
+}
+
+.ctl-input { position: absolute; opacity: 0; pointer-events: none; }
+.page { background: var(--bg); color: var(--text); min-height: 100vh; }
+#s90:checked ~ .page { zoom: 0.9; }
+#s100:checked ~ .page { zoom: 1.0; }
+#s120:checked ~ .page { zoom: 1.2; }
+#s140:checked ~ .page { zoom: 1.4; }
+.controls-group label { user-select: none; }
+
+body, pre, center, .align-center, .container, input, button {
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+.edition-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 24px 0;
+  padding: 8px 12px;
+  background: var(--header-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+}
+.edition-switch a {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--card-border);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.edition-switch a:hover {
+  background: var(--verse-bg);
+  border-color: var(--accent);
+}
+.edition-switch a.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+.edition-switch a.home-btn {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 600;
+}
+sub {
+  font-size: 0.75em;
+  color: var(--term-color, #b45309);
+  padding: 1px 3px;
+  border-radius: 3px;
+  background: rgba(180, 83, 9, 0.08);
+}
+</style>
+</head>
+<body>
+  <input type="radio" name="theme" id="t-auto" class="ctl-input" checked>
+  <input type="radio" name="theme" id="t-light" class="ctl-input">
+  <input type="radio" name="theme" id="t-dark" class="ctl-input">
+  <input type="radio" name="size" id="s90" class="ctl-input">
+  <input type="radio" name="size" id="s100" class="ctl-input" checked>
+  <input type="radio" name="size" id="s120" class="ctl-input">
+  <input type="radio" name="size" id="s140" class="ctl-input">
+  <div class="page">
+  <header class="sticky-header">
+    <div class="brand-title">Утренняя служба ISKCON (с пословным разбором и переводом)</div>
+    <div class="controls-group">
+      <label class="btn-ctrl" for="s90" title="Small">A-</label>
+      <label class="btn-ctrl" for="s100" title="Default">A</label>
+      <label class="btn-ctrl" for="s120" title="Large">A+</label>
+      <label class="btn-ctrl" for="s140" title="Extra Large">A++</label>
+      <label class="btn-ctrl" for="t-auto" title="Auto">🌘</label>
+      <label class="btn-ctrl" for="t-light" title="Light">☀️</label>
+      <label class="btn-ctrl" for="t-dark" title="Dark">🌙</label>
+    </div>
+  </header>
+  <nav class="quick-nav">
+    <a href="#1-шри-гурваштака">1. Гурв</a><a href="#2-вибхавари-шеша">2. Вибхавари-шеша</a><a href="#3-намасте-нрисимхайя">3. Намасте</a><a href="#4-туласи-пуджа">4. Туласи-пуджа</a><a href="#5-десять-оскорблений-святого-имени">5. Десять</a><a href="#6-шри-вайшнава-пранама">6. Вайшнава-пранама</a><a href="#7-шикшаштака">7. Шикш</a><a href="#8-шри-према-дхвани">8. Према-дхвани</a>
+  </nav>
+
+  <main class="container">
+    <div class="edition-switch">
+      <a href="./index.html" class="home-btn">← Библиотека</a>
+      <a href="./morning-service-ru-verses.html">RU Шлоки</a>
+      <a href="./morning-service-ru-interlinear.html">RU Связный</a>
+      <a href="./morning-service-ru-word-by-word.html" class="active">RU Пословный</a>
+      <a href="../../index.html#/shlokas" class="home-btn">★ Интерактивный банк</a>
+    </div>
+
+<h1 id="утренняя-служба-iskcon-с-пословным-разбором-и-переводом">Утренняя служба ISKCON (с пословным разбором и переводом)</h1>
+<h3 id="ежедневная-утренняя-программа-мангала-арати-джапа-даршан">Ежедневная утренняя программа (Мангала-арати, Джапа, Даршан)</h3>
+<blockquote><p>Полный справочник для углубленного изучения: санскритские стихи (кириллица с диакритикой), пословный грамматический разбор каждого термина (<em>анвайя</em>) на русском языке и литературный перевод.</p></blockquote>
+<hr/>
+<h2 id="оглавление">Оглавление</h2>
+<ol><li><p><a href="#1-шри-гурваштака">Шри Гурваштака</a> — <em>Шрила Вишванатха Чакраварти Тхакур</em></p></li><li><p><a href="#2-вибхавари-шеша">Вибхавари-шеша</a> — <em>Шрила Бхактивинода Тхакур («Кальяна-калпатару»)</em></p></li><li><p><a href="#3-намасте-нрисимхайя">Намасте Нрисимхайя</a> — <em>Нрисимха пранама («Чайтанья-чаритамрита» 16.52–53; «Гита-говинда», «Дашаватара-стотра» 4)</em></p></li><li><p><a href="#4-туласи-пуджа">Туласи-пуджа</a> — <em>Шри Туласи-пранама, арати (Кришна Даса), прадакшина-мантра</em></p></li><li><p><a href="#5-десять-оскорблений-святого-имени">Десять оскорблений святого имени</a> — <em>«Падма-пурана» («Брахма-кханда» 25.15–18, 22–23; «Хари-бхакти-виласа» 11.521–526)</em></p></li><li><p><a href="#6-шри-вайшнава-пранама">Шри Вайшнава-пранама</a> — <em>Традиционная вайшнавская пранама-мантра</em></p></li><li><p><a href="#7-шикшаштака">Шикшаштака</a> — <em>Шри Чайтанья Махапрабху</em></p></li><li><p><a href="#8-шри-према-дхвани">Шри Према-дхвани</a> — <em>Традиционные молитвы прославления</em></p></li></ol>
+<hr/>
+<h2 id="1-шри-гурваштака">1. Шри Гурваштака</h2>
+<p><strong>Автор / Источник:</strong> <em>Шрила Вишванатха Чакраварти Тхакур</em></p>
+<h3 id="стих-1">Стих 1</h3>
+<pre><code>сам̇са̄ра-да̄ва̄нала-лӣд̣ха-лока-
+тра̄н̣а̄йа ка̄рун̣йа-гхана̄гханатвам
+пра̄птасйа калйа̄н̣а-гун̣а̄рн̣авасйа
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>сам̇са̄ра</strong> — материального существования;</p></li><li><p><strong>да̄ва-анала</strong> — лесным пожаром;</p></li><li><p><strong>лӣд̣ха</strong> — охваченных;</p></li><li><p><strong>лока</strong> — людей;</p></li><li><p><strong>тра̄н̣а̄йа</strong> — ради спасения;</p></li><li><p><strong>ка̄рун̣йа</strong> — милости;</p></li><li><p><strong>гхана̄гханатвам</strong> — свойство грозовой тучи;</p></li><li><p><strong>пра̄птасйа</strong> — обретающего;</p></li><li><p><strong>калйа̄н̣а</strong> — благоприятных;</p></li><li><p><strong>гун̣а-арн̣авасйа</strong> — океана качеств;</p></li><li><p><strong>ванде</strong> — выражаю почтение;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я в глубоком почтении склоняюсь перед лотосными стопами своего духовного учителя, океана благодатных качеств. Подобно грозовой туче, которая гасит лесной пожар потоками дождя, он тушит пылающий огонь материального существования, спасая души, охваченные этим пламенем.</p>
+<hr/>
+<h3 id="стих-2">Стих 2</h3>
+<pre><code>маха̄прабхох̣ кӣртана-нр̣тйа-гӣта-
+ва̄дитра-ма̄дйан-манасо расена
+рома̄н̃ча-кампа̄ш́ру-таран̇га-бха̄джо
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>маха̄прабхох̣</strong> — Господа Махапрабху;</p></li><li><p><strong>кӣртана</strong> — совместным воспеванием;</p></li><li><p><strong>нр̣тйа</strong> — танцем;</p></li><li><p><strong>гӣта</strong> — пением;</p></li><li><p><strong>ва̄дитра</strong> — игрой на музыкальных инструментах;</p></li><li><p><strong>ма̄дйат-манасах̣</strong> — чей ум опьянен;</p></li><li><p><strong>расена</strong> — чистым нектаром;</p></li><li><p><strong>рома-ан̃ча</strong> — волосами, встающими дыбом;</p></li><li><p><strong>кампа</strong> — дрожью;</p></li><li><p><strong>аш́ру-таран̇га</strong> — потоками слез;</p></li><li><p><strong>бха̄джах̣</strong> — испытывающего;</p></li><li><p><strong>ванде</strong> — я выражаю почтение;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>В экстазе воспевая святое имя, танцуя, играя на музыкальных инструментах и слушая пение, духовный учитель всегда черпает радость в санкиртане Господа Чайтаньи Махапрабху. Поскольку он вкушает нектар чистой преданности, волосы на его теле порой встают дыбом, он дрожит, и волны слез льются из его глаз. Я приношу почтительные поклоны лотосным стопам такого духовного учителя.</p>
+<hr/>
+<h3 id="стих-3">Стих 3</h3>
+<pre><code>ш́рӣ-виграха̄ра̄дхана-нитйа-на̄на̄-
+ш́р̣н̇га̄ра-тан-мандира-ма̄рджана̄дау
+йуктасйа бхакта̄м̇ш́ ча нийун̃джато &apos;пи
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ш́рӣ-виграха-а̄ра̄дхана</strong> — поклонением Божествам;</p></li><li><p><strong>нитйа</strong> — ежедневно;</p></li><li><p><strong>на̄на̄</strong> — разнообразными;</p></li><li><p><strong>ш́р̣н̇га̄ра</strong> — одеждами и украшениями;</p></li><li><p><strong>тат</strong> — Их;</p></li><li><p><strong>мандира</strong> — храма;</p></li><li><p><strong>ма̄рджана-а̄дау</strong> — уборкой и прочим;</p></li><li><p><strong>йуктасйа</strong> — занятого;</p></li><li><p><strong>бхакта̄н</strong> — преданных;</p></li><li><p><strong>ча</strong> — также;</p></li><li><p><strong>нийун̃джатах̣</strong> — вовлекающего;</p></li><li><p><strong>апи</strong> — хотя;</p></li><li><p><strong>ванде</strong> — приношу поклоны;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я приношу свои почтительные поклоны лотосным стопам духовного учителя, который всегда занят поклонением Шри Шри Радхе и Кришне в храме — одевает Их в прекрасные одежды, украшает и убирает Их обитель, а также занимает этим поклонением своих преданных учеников.</p>
+<hr/>
+<h3 id="стих-4">Стих 4</h3>
+<pre><code>чатур-видха-ш́рӣ-бхагават-праса̄да-
+сва̄дв-анна-тр̣пта̄н хари-бхакта-сан̇гха̄н
+кр̣тваива тр̣птим̇ бхаджатах̣ садаива
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>чатур-видха</strong> — четырёх видов;</p></li><li><p><strong>ш́рӣ-бхагават-праса̄да</strong> — священным прасадом Господа;</p></li><li><p><strong>сва̄дв-анна</strong> — вкусной пищей;</p></li><li><p><strong>тр̣пта̄н</strong> — удовлетворённых;</p></li><li><p><strong>хари-бхакта-сан̇гха̄н</strong> — собрания преданных Господа Хари;</p></li><li><p><strong>кр̣тва̄-ева</strong> — сделав;</p></li><li><p><strong>тр̣птим</strong> — удовлетворение;</p></li><li><p><strong>бхаджатах̣</strong> — испытывающего;</p></li><li><p><strong>сада̄-ева</strong> — всегда;</p></li><li><p><strong>ванде</strong> — я выражаю почтение;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я в глубоком почтении склоняюсь к лотосным стопам своего духовного учителя, который всегда испытывает великую радость, насыщая преданных четырьмя видами вкуснейшего бхагават-прасада. Видя преданных полностью удовлетворенными, он сам чувствует глубокое удовлетворение.</p>
+<hr/>
+<h3 id="стих-5">Стих 5</h3>
+<pre><code>ш́рӣ-ра̄дхика̄-ма̄дхавайор апа̄ра-
+ма̄дхурйа-лӣла̄ гун̣а-рӯпа-на̄мна̄м
+прати-кш̣ан̣а̄сва̄дана-лолупасйа
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ш́рӣ-ра̄дхика̄-ма̄дхавайох̣</strong> — Шри Радхики и Мадхавы;</p></li><li><p><strong>апа̄ра</strong> — безграничных;</p></li><li><p><strong>ма̄дхурйа</strong> — сладости;</p></li><li><p><strong>лӣла̄</strong> — игр;</p></li><li><p><strong>гун̣а</strong> — качеств;</p></li><li><p><strong>рӯпа</strong> — образов;</p></li><li><p><strong>на̄мна̄м</strong> — имён;</p></li><li><p><strong>прати-кш̣ан̣а-а̄сва̄дана-лолупасйа</strong> — жаждущего каждое мгновение вкушать;</p></li><li><p><strong>ванде</strong> — я выражаю почтение;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я в глубоком почтении склоняюсь к лотосным стопам духовного учителя, который каждое мгновение жаждет вкушать неисчерпаемую сладость имен, образов, качеств и пастушеских игр Шри Радхики и Мадхавы.</p>
+<hr/>
+<h3 id="стих-6">Стих 6</h3>
+<pre><code>никун̃джа-йӯно рати-кели-сиддхйаи
+йа̄ йа̄либхир йуктир апекш̣ан̣ӣйа̄
+татра̄ти-да̄кш̣йа̄д ати-валлабхасйа
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>никун̃джа-йӯнох̣</strong> — юной четы рощ (Радхи и Кришны);</p></li><li><p><strong>рати-кели-сиддхйаи</strong> — ради совершенства Их любовных игр;</p></li><li><p><strong>йа̄ йа̄</strong> — какая бы ни;</p></li><li><p><strong>а̄либхих̣</strong> — подругами-гопи;</p></li><li><p><strong>йуктих̣</strong> — подготовка;</p></li><li><p><strong>апекш̣ан̣ӣйа̄</strong> — желаемая;</p></li><li><p><strong>татра</strong> — в этом;</p></li><li><p><strong>ати-да̄кш̣йа̄т</strong> — благодаря великому искусству;</p></li><li><p><strong>ати-валлабхасйа</strong> — очень дорогого;</p></li><li><p><strong>ванде</strong> — я приношу поклоны;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я в глубоком почтении склоняюсь к лотосным стопам своего духовного учителя, который очень дорог Радхе и Кришне, ибо он в высшей степени искусен в оказании помощи гопи, устраивающим в рощах Вриндавана всё необходимое для любовных игр Юной Четы.</p>
+<hr/>
+<h3 id="стих-7">Стих 7</h3>
+<pre><code>са̄кш̣а̄д-дхаритвена самаста-ш́а̄страир
+уктас татха̄ бха̄вйата ева садбхих̣
+кинту прабхор йах̣ прийа ева тасйа
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [7]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>са̄кш̣а̄т-дхаритвена</strong> — непосредственно как Сам Господь Хари;</p></li><li><p><strong>самаста</strong> — всеми;</p></li><li><p><strong>ш́а̄страих̣</strong> — богооткровенными писаниями;</p></li><li><p><strong>уктах̣</strong> — признанный;</p></li><li><p><strong>татха̄</strong> — также;</p></li><li><p><strong>бха̄вйате</strong> — считается;</p></li><li><p><strong>ева</strong> — воистину;</p></li><li><p><strong>садбхих̣</strong> — святыми мудрецами;</p></li><li><p><strong>кинту</strong> — однако;</p></li><li><p><strong>прабхох̣</strong> — Господу;</p></li><li><p><strong>йах̣</strong> — который;</p></li><li><p><strong>прийах̣</strong> — дорог;</p></li><li><p><strong>ева</strong> — несомненно;</p></li><li><p><strong>тасйа</strong> — того;</p></li><li><p><strong>ванде</strong> — я приношу поклоны;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Все священные писания признают духовного учителя неотличным от Самого Господа Хари, и великие святые почитают его таковым, однако он — сокровенный и самый дорогой слуга Господа. В глубоком почтении я склоняюсь к лотосным стопам этого духовного учителя.</p>
+<hr/>
+<h3 id="стих-8">Стих 8</h3>
+<pre><code>йасйа праса̄да̄д бхагават-праса̄до
+йасйа̄праса̄да̄н на гатих̣ куто &apos;пи
+дхйа̄йан стувам̇с тасйа йаш́ас три-сандхйам̇
+ванде гурох̣ ш́рӣ-чаран̣а̄равиндам [8]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йасйа</strong> — чьей;</p></li><li><p><strong>праса̄да̄т</strong> — по милости;</p></li><li><p><strong>бхагават-праса̄дах̣</strong> — обретается милость Господа;</p></li><li><p><strong>йасйа</strong> — чьим;</p></li><li><p><strong>апраса̄да̄т</strong> — отсутствием милости;</p></li><li><p><strong>на</strong> — не;</p></li><li><p><strong>гатих̣</strong> — путь к спасению;</p></li><li><p><strong>кутах̣ апи</strong> — ниоткуда;</p></li><li><p><strong>дхйа̄йан</strong> — медитируя;</p></li><li><p><strong>стуван</strong> — вознося хвалу;</p></li><li><p><strong>тасйа</strong> — его;</p></li><li><p><strong>йаш́ах̣</strong> — славе;</p></li><li><p><strong>три-сандхйам</strong> — трижды в день;</p></li><li><p><strong>ванде</strong> — приношу поклоны;</p></li><li><p><strong>гурох̣</strong> — духовного учителя;</p></li><li><p><strong>ш́рӣ-чаран̣а-аравиндам</strong> — лотосным стопам;</p></li></ul>
+<p><strong>Перевод:</strong><br/>По милости духовного учителя человек обретает милость Кришны. Без его милости невозможно достичь никакого духовного продвижения. Размышляя о его славе и воспевая её трижды в день, я почтительно склоняюсь перед лотосными стопами своего духовного учителя.</p>
+<hr/>
+<h2 id="2-вибхавари-шеша">2. Вибхавари-шеша</h2>
+<p><strong>Автор / Источник:</strong> <em>Шрила Бхактивинода Тхакур («Кальяна-калпатару»)</em></p>
+<h3 id="стих-1-2">Стих 1</h3>
+<pre><code>вибха̄варӣ ш́еш̣а, а̄лока-правеш́а,
+нидра̄ чха̄р̣и&apos; ут̣хо джӣва
+боло хари хари, мукунда мура̄ри,
+ра̄ма кр̣ш̣н̣а хайагрӣва [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>вибха̄варӣ</strong> — ночь;</p></li><li><p><strong>ш́еш̣а</strong> — подошла к концу;</p></li><li><p><strong>а̄лока-правеш́а</strong> — свет проникает;</p></li><li><p><strong>нидра̄</strong> — сон;</p></li><li><p><strong>чха̄р̣и&apos;</strong> — оставив;</p></li><li><p><strong>ут̣хо</strong> — вставай;</p></li><li><p><strong>джӣва</strong> — о душа;</p></li><li><p><strong>боло</strong> — пой;</p></li><li><p><strong>хари хари</strong> — Хари, Хари;</p></li><li><p><strong>мукунда</strong> — Мукунда;</p></li><li><p><strong>мура̄ри</strong> — Мурари;</p></li><li><p><strong>ра̄ма</strong> — Рама;</p></li><li><p><strong>кр̣ш̣н̣а</strong> — Кришна;</p></li><li><p><strong>хайагрӣва</strong> — Хаягрива;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Ночь подошла к концу, и забрезжил рассвет. Оставьте сон и поднимайтесь, о дживы! Воспевайте святые имена: Хари, Хари, Мукунда, Мурари, Рама, Кришна, Хаягрива!</p>
+<hr/>
+<h3 id="стих-2-2">Стих 2</h3>
+<pre><code>нр̣сим̇ха ва̄мана, ш́рӣ-мадхусӯдана,
+браджендра-нандана ш́йа̄ма
+пӯтана̄-гха̄тана, каит̣абха-ш́а̄тана,
+джайа да̄ш́аратхи-ра̄ма [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>нр̣сим̇ха</strong> — Господь Нрисимхадева;</p></li><li><p><strong>ва̄мана</strong> — Господь Ваманадева;</p></li><li><p><strong>ш́рӣ-мадхусӯдана</strong> — прекрасный убийца демона Мадху;</p></li><li><p><strong>браджендра-нандана</strong> — сын царя Враджи (Нанды Махараджи);</p></li><li><p><strong>ш́йа̄ма</strong> — темноликий Господь Шьямасундара;</p></li><li><p><strong>пӯтана̄-гха̄тана</strong> — убивший ведьму Путану;</p></li><li><p><strong>каит̣абха-ш́а̄тана</strong> — сокрушивший демона Кайтабху;</p></li><li><p><strong>джайа</strong> — вся слава;</p></li><li><p><strong>да̄ш́аратхи-ра̄ма</strong> — Господь Рамачандра, сын царя Дашаратхи;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Господь Нрисимха, Вамана, Шри Мадхусудана, сын царя Враджи — темноликий Шьяма, убийца Путаны, победитель Кайтабхи! Вся слава Господу Раме, сыну Дашаратхи!</p>
+<hr/>
+<h3 id="стих-3-2">Стих 3</h3>
+<pre><code>йаш́ода̄ дула̄ла, говинда-гопа̄ла,
+вр̣нда̄вана пурандара
+гопӣ-прийа-джана, ра̄дхика̄-раман̣а,
+бхувана-сундара-бара [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йаш́ода̄</strong> — Яшоды;</p></li><li><p><strong>дула̄ла</strong> — любимец;</p></li><li><p><strong>говинда-гопа̄ла</strong> — Говинда и Гопала;</p></li><li><p><strong>вр̣нда̄вана</strong> — Вриндавана;</p></li><li><p><strong>пурандара</strong> — властитель;</p></li><li><p><strong>гопӣ-прийа-джана</strong> — возлюбленный пастушек гопи;</p></li><li><p><strong>ра̄дхика̄-раман̣а</strong> — наслаждающийся с Радхикой;</p></li><li><p><strong>бхувана-сундара-бара</strong> — прекраснейший во вселенной;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Он — любимый сын Яшоды, Говинда, Гопала и повелитель Вриндавана. Он — возлюбленный гопи, услада Радхики и прекраснейший во всех мирах.</p>
+<hr/>
+<h3 id="стих-4-2">Стих 4</h3>
+<pre><code>ра̄ван̣а̄нтакара, ма̄кхана-таскара,
+гопӣ-джана-вастра-ха̄рӣ
+браджера ра̄кха̄ла, гопа-вр̣нда-па̄ла,
+читта-ха̄рӣ бам̇ш́ӣ-дха̄рӣ [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ра̄ван̣а-анта-кара</strong> — убивший Равану;</p></li><li><p><strong>ма̄кхана-таскара</strong> — вор масла;</p></li><li><p><strong>гопӣ-джана-вастра-ха̄рӣ</strong> — похититель одежд гопи;</p></li><li><p><strong>браджера</strong> — Враджа;</p></li><li><p><strong>ра̄кха̄ла</strong> — пастушок;</p></li><li><p><strong>гопа-вр̣нда-па̄ла</strong> — защитник пастухов;</p></li><li><p><strong>читта-ха̄рӣ</strong> — покоряющий сердца;</p></li><li><p><strong>бам̇ш́ӣ-дха̄рӣ</strong> — держащий флейту;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Он — сокрушитель Раваны, воришка масла и похититель одежд гопи. Он — пастушок Враджа, защитник пастухов и пленитель сердец, держащий флейту.</p>
+<hr/>
+<h3 id="стих-5-2">Стих 5</h3>
+<pre><code>йогӣндра-вандана, ш́рӣ-нанда-нандана,
+браджа-джана-бхайа-ха̄рӣ
+навӣна нӣрада, рӯпа манохара,
+мохана-бам̇ш́ӣ-биха̄рӣ [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йогӣндра-вандана</strong> — Тот, кому поклоняются лучшие из йогов;</p></li><li><p><strong>ш́рӣ-нанда-нандана</strong> — сын Нанды Махараджи;</p></li><li><p><strong>браджа-джана-бхайа-ха̄рӣ</strong> — уносящий страхи жителей Враджа;</p></li><li><p><strong>навӣна</strong> — свежее;</p></li><li><p><strong>нӣрада</strong> — грозовое облако;</p></li><li><p><strong>рӯпа</strong> — чей облик;</p></li><li><p><strong>манохара</strong> — пленяет ум;</p></li><li><p><strong>мохана-бам̇ш́ӣ-биха̄рӣ</strong> — наслаждающийся игрой на чарующей флейте;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Ему поклоняются величайшие из йогов; Он — сын Нанды, рассеивающий все страхи жителей Враджа. Цвет Его тела подобен свежему дождевому облаку, Его пленительный облик чарует ум, и Он наслаждается играми, играя на Своей пленительной флейте.</p>
+<hr/>
+<h3 id="стих-6-2">Стих 6</h3>
+<pre><code>йаш́ода̄-нандана, кам̇са-нисӯдана,
+никун̃джа-ра̄са-вила̄сӣ
+кадамба-ка̄нана, ра̄са-пара̄йан̣а,
+бр̣нда-випина-нива̄сӣ [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йаш́ода̄-нандана</strong> — сын Яшоды;</p></li><li><p><strong>кам̇са-нисӯдана</strong> — убийца Камсы;</p></li><li><p><strong>никун̃джа-ра̄са-вила̄сӣ</strong> — наслаждающийся танцем раса в лесных беседках;</p></li><li><p><strong>кадамба-ка̄нана</strong> — [бродящий по] рощам кадамба;</p></li><li><p><strong>ра̄са-пара̄йан̣а</strong> — поглощенный танцем раса;</p></li><li><p><strong>бр̣нда-випина-нива̄сӣ</strong> — житель леса Вриндавана;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Он — любимый сын Яшоды, сразивший Камсу и наслаждающийся танцем раса в лесных беседках. Он упоен танцем раса в рощах кадамба и обитает в лесу Вриндавана.</p>
+<hr/>
+<h3 id="стих-7-2">Стих 7</h3>
+<pre><code>а̄нанда-вардхана, према-никетана,
+пхула-ш́ара-йоджака ка̄ма
+гопа̄н̇гана̄-ган̣а, читта-винодана,
+самаста-гун̣а-ган̣а-дха̄ма [7]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>а̄нанда-вардхана</strong> — увеличивающий блаженство;</p></li><li><p><strong>према-никетана</strong> — обитель чистой любви;</p></li><li><p><strong>пхула-ш́ара-йоджака</strong> — пускающий стрелы из цветов;</p></li><li><p><strong>ка̄ма</strong> — Купидон;</p></li><li><p><strong>гопа̄н̇гана̄-ган̣а</strong> — девушек-пастушек;</p></li><li><p><strong>читта-винодана</strong> — радующий сердца;</p></li><li><p><strong>самаста-гун̣а-ган̣а-дха̄ма</strong> — обитель всех прекрасных качеств;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Он умножает блаженство Своих преданных, Он — обитель чистой любви, трансцендентный Купидон, пускающий стрелы из цветов. Он радует сердца юных пастушек и является обителью всех прекрасных качеств.</p>
+<hr/>
+<h3 id="стих-8-2">Стих 8</h3>
+<pre><code>джа̄муна-джӣвана, кели-пара̄йан̣а,
+ма̄наса-чандра-чакора
+на̄ма-судха̄-раса, га̄о кр̣ш̣н̣а-джаш́а
+ра̄кхо вачана мана мора [8]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>джа̄муна-джӣвана</strong> — жизнь реки Ямуны;</p></li><li><p><strong>кели-пара̄йан̣а</strong> — поглощенный играми;</p></li><li><p><strong>ма̄наса-чандра-чакора</strong> — птица чакора для луны ума;</p></li><li><p><strong>на̄ма-судха̄-раса</strong> — нектарный вкус святого имени;</p></li><li><p><strong>га̄о</strong> — воспевай;</p></li><li><p><strong>кр̣ш̣н̣а-джаш́а</strong> — славу Кришны;</p></li><li><p><strong>ра̄кхо</strong> — исполни;</p></li><li><p><strong>вачана</strong> — наставление;</p></li><li><p><strong>мана</strong> — ум;</p></li><li><p><strong>мора</strong> — мой;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Он — сама жизнь реки Ямуны, всецело поглощен любовными играми и подобен птице чакоре для луны ума гопи. О мой ум, внемли моим словам и воспевай славу Кришны, вкушая нектарный нектар святого имени!</p>
+<hr/>
+<h2 id="3-намасте-нрисимхайя">3. Намасте Нрисимхайя</h2>
+<p><strong>Автор / Источник:</strong> <em>Нрисимха пранама («Чайтанья-чаритамрита» 16.52–53; «Гита-говинда», «Дашаватара-стотра» 4)</em></p>
+<h3 id="стих-1-3">Стих 1</h3>
+<pre><code>намас те нара-сим̇ха̄йа
+прахла̄да̄хла̄да-да̄йине
+хиран̣йакаш́ипор вакш̣ах̣-
+ш́ила̄-т̣ан̇ка-накха̄лайе [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>намас</strong> — поклоны;</p></li><li><p><strong>те</strong> — Тебе;</p></li><li><p><strong>нара-сим̇ха̄йа</strong> — Господу Нрисимхе;</p></li><li><p><strong>прахла̄да-а̄хла̄да-да̄йине</strong> — дарующему радость Прахладе;</p></li><li><p><strong>хиран̣йакаш́ипох̣</strong> — Хираньякашипу;</p></li><li><p><strong>вакш̣ах̣-ш́ила̄-т̣ан̇ка-накха-а̄лайе</strong> — чьи ногти подобны резцу на каменной груди;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я выражаю свое почтение Господу Нрисимхе, который дарует радость Прахладе Махарадже и чьи ногти, подобные резцам, пронзают каменную грудь Хираньякашипу.</p>
+<hr/>
+<h3 id="стих-2-3">Стих 2</h3>
+<pre><code>ито нр̣сим̇хах̣ парато нр̣сим̇хо
+йато йато йа̄ми тато нр̣сим̇хах̣
+бахир нр̣сим̇хо хр̣дайе нр̣сим̇хо
+нр̣сим̇хам а̄дим̇ ш́аран̣ам̇ прападйе [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>итах̣</strong> — здесь;</p></li><li><p><strong>нр̣сим̇хах̣</strong> — Господь Нрисимха;</p></li><li><p><strong>паратах̣</strong> — с другой стороны;</p></li><li><p><strong>нр̣сим̇хах̣</strong> — Господь Нрисимха;</p></li><li><p><strong>йатах̣ йатах̣</strong> — куда бы ни;</p></li><li><p><strong>йа̄ми</strong> — я ни шел;</p></li><li><p><strong>татах̣</strong> — там;</p></li><li><p><strong>нр̣сим̇хах̣</strong> — Господь Нрисимха;</p></li><li><p><strong>бахих̣</strong> — снаружи;</p></li><li><p><strong>нр̣сим̇хах̣</strong> — Господь Нрисимха;</p></li><li><p><strong>хр̣дайе</strong> — в сердце;</p></li><li><p><strong>нр̣сим̇хах̣</strong> — Господь Нрисимха;</p></li><li><p><strong>нр̣сим̇хам</strong> — Господу Нрисимхе;</p></li><li><p><strong>а̄дим</strong> — изначальному;</p></li><li><p><strong>ш́аран̣ам</strong> — под защиту;</p></li><li><p><strong>прападйе</strong> — я предаюсь;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Господь Нрисимха и здесь, и там. Куда бы я ни пошел — везде Господь Нрисимха. Он и в сердце, и вовне. Я вручаю себя Господу Нрисимхе, предвечному источнику всего сущего.</p>
+<hr/>
+<h3 id="стих-3-3">Стих 3</h3>
+<pre><code>тава кара-камала-варе накхам адбхута-ш́р̣н̇гам̇
+далита-хиран̣йакаш́ипу-тану-бхр̣н̇гам
+кеш́ава дхр̣та-нара-хари-рӯпа джайа джагадӣш́а харе
+джайа джагадӣш́а харе джайа джагадӣш́а харе [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>тава</strong> — Твоих;</p></li><li><p><strong>кара-камала-варе</strong> — на прекрасных лотосных ладонях;</p></li><li><p><strong>накхам</strong> — ногти;</p></li><li><p><strong>адбхута-ш́р̣н̇гам</strong> — удивительно острые;</p></li><li><p><strong>далита-хиран̣йакаш́ипу-тану-бхр̣н̇гам</strong> — растерзавшие осеподобное тело Хираньякашипу;</p></li><li><p><strong>кеш́ава</strong> — о Кешава;</p></li><li><p><strong>дхр̣та-нара-хари-рӯпа</strong> — принявший образ получеловека-полульва;</p></li><li><p><strong>джайа</strong> — слава;</p></li><li><p><strong>джагадӣш́а</strong> — о Владыка вселенной;</p></li><li><p><strong>харе</strong> — о Хари;</p></li><li><p><strong>джайа</strong> — слава;</p></li><li><p><strong>джагадӣш́а</strong> — о Владыка вселенной;</p></li><li><p><strong>харе</strong> — о Хари;</p></li><li><p><strong>джайа</strong> — слава;</p></li><li><p><strong>джагадӣш́а</strong> — о Владыка вселенной;</p></li><li><p><strong>харе</strong> — о Хари;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О Кешава! О Владыка вселенной! О Господь Хари, принявший образ человекольва! Слава Тебе! Подобно тому как человек может легко раздавить осу ногтями, Ты Своими удивительными острыми когтями на прекрасных лотосных ладонях разорвал на куски похожее на осу тело демона Хираньякашипу.</p>
+<hr/>
+<h2 id="4-туласи-пуджа">4. Туласи-пуджа</h2>
+<p><strong>Автор / Источник:</strong> <em>Шри Туласи-пранама, арати (Кришна Даса), прадакшина-мантра</em></p>
+<h3 id="стих-1-4">Стих 1</h3>
+<pre><code>вр̣нда̄йаи туласӣ-девйаи прийа̄йаи кеш́авасйа ча
+виш̣н̣у-бхакти-праде девӣ сатйаватйаи намо намах̣ [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>вр̣нда̄йаи</strong> — Вринде;</p></li><li><p><strong>туласӣ-девйаи</strong> — богине Туласи;</p></li><li><p><strong>прийа̄йаи</strong> — возлюбленной;</p></li><li><p><strong>кеш́авасйа</strong> — Господа Кешавы;</p></li><li><p><strong>ча</strong> — и;</p></li><li><p><strong>виш̣н̣у-бхакти-праде</strong> — о дарующая преданное служение Господу Вишну;</p></li><li><p><strong>девӣ</strong> — о богиня;</p></li><li><p><strong>сатйаватйаи</strong> — Сатьявати;</p></li><li><p><strong>намо намах̣</strong> — поклоны снова и снова;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я снова и снова склоняюсь перед Вриндой, Туласи-деви, которая очень дорога Господу Кешаве. О богиня, ты даруешь преданное служение Господу Вишну и обладаешь высшей истиной.</p>
+<hr/>
+<h3 id="стих-2-4">Стих 2</h3>
+<pre><code>намо намах̣ туласӣ кр̣ш̣н̣а-прейаси намо намах̣
+ра̄дха̄-кр̣ш̣н̣а-сева̄ па̄бо еи абила̄ш̣ӣ [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>намо намах̣</strong> — вновь и вновь поклоны;</p></li><li><p><strong>туласӣ</strong> — о Туласи;</p></li><li><p><strong>кр̣ш̣н̣а-прейаси</strong> — о возлюбленная Кришны;</p></li><li><p><strong>намо намах̣</strong> — вновь и вновь поклоны;</p></li><li><p><strong>ра̄дха̄-кр̣ш̣н̣а-сева̄</strong> — служение Радхе и Кришне;</p></li><li><p><strong>па̄бо</strong> — я обрету;</p></li><li><p><strong>еи</strong> — это;</p></li><li><p><strong>абила̄ш̣ӣ</strong> — мое желание;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О Туласи, возлюбленная Кришны, я вновь и вновь склоняюсь перед тобой. Мое единственное желание — обрести служение Шри Шри Радхе и Кришне.</p>
+<hr/>
+<h3 id="стих-3-4">Стих 3</h3>
+<pre><code>йе тома̄ра ш́аран̣а лой, тара ва̄н̃чха̄ пӯрн̣а хой
+кр̣па̄ кори&apos; коро та̄ре вр̣нда̄вана-ва̄си [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йе</strong> — тот, кто;</p></li><li><p><strong>тома̄ра</strong> — твоё;</p></li><li><p><strong>ш́аран̣а</strong> — прибежище;</p></li><li><p><strong>лой</strong> — принимает;</p></li><li><p><strong>тара</strong> — его;</p></li><li><p><strong>ва̄н̃чха̄</strong> — желания;</p></li><li><p><strong>пӯрн̣а</strong> — исполненными;</p></li><li><p><strong>хой</strong> — становятся;</p></li><li><p><strong>кр̣па̄</strong> — милость;</p></li><li><p><strong>кори&apos;</strong> — пролив;</p></li><li><p><strong>коро</strong> — сделай;</p></li><li><p><strong>та̄ре</strong> — его;</p></li><li><p><strong>вр̣нда̄вана-ва̄си</strong> — жителем Вриндавана;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Желания того, кто принимает у тебя прибежище, исполняются. Пролив на него свою милость, сделай его жителем Вриндавана.</p>
+<hr/>
+<h3 id="стих-4-3">Стих 4</h3>
+<pre><code>мора еи абхила̄ш̣а, вила̄са кун̃дже дио ва̄са
+найана херибо сада̄ йугала-рӯпа-ра̄ш́и [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>мора</strong> — мое;</p></li><li><p><strong>еи</strong> — это;</p></li><li><p><strong>абхила̄ш̣а</strong> — желание;</p></li><li><p><strong>вила̄са</strong> — любовных игр;</p></li><li><p><strong>кун̃дже</strong> — в роще;</p></li><li><p><strong>дио</strong> — даруй;</p></li><li><p><strong>ва̄са</strong> — приют;</p></li><li><p><strong>найана</strong> — очами;</p></li><li><p><strong>херибо</strong> — буду созерцать;</p></li><li><p><strong>сада̄</strong> — всегда;</p></li><li><p><strong>йугала-рӯпа-ра̄ш́и</strong> — сияющую красоту Божественной четы;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Мое единственное желание — поселиться в рощах наслаждений Вриндавана, чтобы своими глазами всегда созерцать ослепительную красоту Божественной Четы.</p>
+<hr/>
+<h3 id="стих-5-3">Стих 5</h3>
+<pre><code>еи ниведана дхара, сакхӣра анугата коро
+сева̄-адхика̄ра дийе коро нӣджа да̄сӣ [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>еи</strong> — эту;</p></li><li><p><strong>ниведана</strong> — просьбу;</p></li><li><p><strong>дхара</strong> — прими;</p></li><li><p><strong>сакхӣра</strong> — сакхи;</p></li><li><p><strong>анугата</strong> — последователем;</p></li><li><p><strong>коро</strong> — сделай;</p></li><li><p><strong>сева̄-адхика̄ра</strong> — право на служение;</p></li><li><p><strong>дийе</strong> — даровав;</p></li><li><p><strong>коро</strong> — сделай;</p></li><li><p><strong>нӣджа</strong> — своей собственной;</p></li><li><p><strong>да̄сӣ</strong> — служанкой;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Молю тебя, прими мою просьбу: позволь мне следовать по стопам сакхи и, наделив правом на служение, сделай меня своей служанкой.</p>
+<hr/>
+<h3 id="стих-6-3">Стих 6</h3>
+<pre><code>дӣна кр̣ш̣н̣а-да̄се кой, еи йена мора хой
+ш́рӣ-ра̄дха̄-говинда-преме сада̄ йена бха̄си [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>дӣна</strong> — падший;</p></li><li><p><strong>кр̣ш̣н̣а-да̄се</strong> — Кришнадас;</p></li><li><p><strong>кой</strong> — говорит;</p></li><li><p><strong>еи</strong> — это;</p></li><li><p><strong>йена</strong> — пусть;</p></li><li><p><strong>мора</strong> — моим;</p></li><li><p><strong>хой</strong> — будет;</p></li><li><p><strong>ш́рӣ-ра̄дха̄-говинда-преме</strong> — в любви к Шри Шри Радхе-Говинде;</p></li><li><p><strong>сада̄</strong> — всегда;</p></li><li><p><strong>йена</strong> — пусть;</p></li><li><p><strong>бха̄си</strong> — я плаваю;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Падший слуга Кришнадас молит: «Пусть же сбудется это мое желание, чтобы я вечно плавал в любви к Шри Шри Радхе и Говинде».</p>
+<hr/>
+<h3 id="стих-7-3">Стих 7</h3>
+<pre><code>йа̄ни ка̄ни ча па̄па̄ни брахма-хатйа̄дика̄ни ча
+та̄ни та̄ни пран̣аш́йанти прадакш̣ин̣ах̣ паде паде [7]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йа̄ни ка̄ни ча</strong> — какие бы ни;</p></li><li><p><strong>па̄па̄ни</strong> — грехи;</p></li><li><p><strong>брахма-хатйа̄-а̄дика̄ни</strong> — начиная с убийства брахмана;</p></li><li><p><strong>ча</strong> — и;</p></li><li><p><strong>та̄ни та̄ни</strong> — все они;</p></li><li><p><strong>пран̣аш́йанти</strong> — уничтожаются;</p></li><li><p><strong>прадакш̣ин̣ах̣</strong> — совершающего обход;</p></li><li><p><strong>паде паде</strong> — с каждым шагом;</p></li></ul>
+<p><strong>Перевод:</strong><br/>С каждым шагом того, кто совершает обход вокруг Шримати Туласи-деви, уничтожаются все грехи, какие бы он ни совершил, даже такой тяжкий грех, как убийство брахмана.</p>
+<hr/>
+<h2 id="5-десять-оскорблений-святого-имени">5. Десять оскорблений святого имени</h2>
+<p><strong>Автор / Источник:</strong> <em>«Падма-пурана» («Брахма-кханда» 25.15–18, 22–23; «Хари-бхакти-виласа» 11.521–526)</em></p>
+<h3 id="канонический-список-десяти-оскорблений-святого-имени-из-падма-пураны">Канонический список десяти оскорблений святого имени (из «Падма-пураны»)</h3>
+<ol><li><p>Поносить преданных, посвятивших свою жизнь распространению святого имени Господа.</p></li><li><p>Считать имена таких полубогов, как Господь Шива или Господь Брахма, обладающими тем же могуществом, что и имя Господа Вишну, или независимыми от Него.</p></li><li><p>Не повиноваться указаниям духовного учителя.</p></li><li><p>Поносить ведическую литературу или литературу, согласующуюся с ведическими представлениями.</p></li><li><p>Считать славу святого имени плодом воображения.</p></li><li><p>Давать собственные толкования святому имени Господа.</p></li><li><p>Совершать греховные поступки в расчете на силу святого имени Господа.</p></li><li><p>Считать повторение Харе Кришна одной из форм благоприятной обрядовой деятельности, рекомендуемой в Ведах в разделе карма-канды (приравнивать святое имя к мирскому благочестию).</p></li><li><p>Объяснять славу святых имен неверующему.</p></li><li><p>Не иметь полной веры в повторение святых имен и продолжать держаться за свои материальные привязанности, даже получив и поняв столь много наставлений на эту тему.</p></li></ol>
+<p><em>Также оскорблением является невнимательность при повторении святого имени.</em><br/><em>Каждый преданный, стремящийся к совершенству, должен старательно избегать этих десяти оскорблений, чтобы быстро достичь желанного успеха — чистой любви к Кришне.</em></p>
+<hr/>
+<h3 id="стихи-из-падма-пураны">Стихи из «Падма-пураны»</h3>
+<h3 id="стих-1-5">Стих 1</h3>
+<pre><code>сата̄м̇ нинда̄ на̄мнах̣ парамам апара̄дхам̇ витануте
+йатах̣ кхйа̄тим̇ йа̄там̇ катхам у сахате тад-вигарха̄м [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>сата̄м</strong> — святых;</p></li><li><p><strong>нинда̄</strong> — поношение, хула;</p></li><li><p><strong>на̄мнах̣</strong> — святому имени;</p></li><li><p><strong>парамам</strong> — высшее, величайшее;</p></li><li><p><strong>апара̄дхам</strong> — оскорбление;</p></li><li><p><strong>витануте</strong> — наносит, влечёт за собой;</p></li><li><p><strong>йатах̣</strong> — благодаря которым;</p></li><li><p><strong>кхйа̄тим</strong> — славу, известность;</p></li><li><p><strong>йа̄там</strong> — обрело;</p></li><li><p><strong>катхам у</strong> — как же;</p></li><li><p><strong>сахате</strong> — стерпит;</p></li><li><p><strong>тат-вигарха̄м</strong> — их поношение;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Хула на святых преданных влечёт за собой величайшее оскорбление святого имени. Ведь именно благодаря им святое имя явило в мире свою славу — как же святое имя способно стерпеть их поношение?!</p>
+<hr/>
+<h3 id="стих-2-5">Стих 2</h3>
+<pre><code>ш́ивасйа ш́рӣ-виш̣н̣ор йа иха гун̣а-на̄ма̄ди-сакалам̇
+дхийа̄ бхиннам̇ паш́йет са кхалу хари-на̄ма̄хита-карах̣ [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ш́ивасйа</strong> — Господа Шивы;</p></li><li><p><strong>ш́рӣ-виш̣н̣ох̣</strong> — Господа Шри Вишну;</p></li><li><p><strong>йах̣</strong> — кто;</p></li><li><p><strong>иха</strong> — в этом мире;</p></li><li><p><strong>гун̣а-на̄ма-а̄ди-сакалам</strong> — все качества, имена и деяния;</p></li><li><p><strong>дхийа̄</strong> — своим разумом;</p></li><li><p><strong>бхиннам</strong> — отличными, независимыми друг от друга;</p></li><li><p><strong>паш́йет</strong> — представляет, видит;</p></li><li><p><strong>сах̣</strong> — тот;</p></li><li><p><strong>кхалу</strong> — воистину;</p></li><li><p><strong>хари-на̄ма-ахита-карах̣</strong> — совершает оскорбление святого имени Господа Хари;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Тот, кто в этом мире считает качества, имена и деяния Господа Шивы и Господа Шри Вишну независимыми и отличными друг от друга, воистину совершает оскорбление святого имени Господа Хари.</p>
+<hr/>
+<h3 id="стих-3-5">Стих 3</h3>
+<pre><code>гурор аваджн̃а̄ ш́рути-ш́а̄стра-нинданам̇
+татха̄ртха-ва̄до хари-на̄мни калпанам [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>гурох̣</strong> — духовному учителю;</p></li><li><p><strong>аваджн̃а̄</strong> — пренебрежение, непочтительность;</p></li><li><p><strong>ш́рути-ш́а̄стра-нинданам</strong> — поношение ведической литературы;</p></li><li><p><strong>татха̄</strong> — также;</p></li><li><p><strong>артха-ва̄дах̣</strong> — толкование славы как преувеличения (панегирика);</p></li><li><p><strong>хари-на̄мни</strong> — в святом имени Господа Хари;</p></li><li><p><strong>калпанам</strong> — измышление собственных толкований;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Пренебрежение духовным учителем, хула на ведические писания, отношение к славе святого имени Господа Хари как к преувеличенной хвалебной речи, а также придумывание собственных толкований святого имени являются тяжкими оскорблениями.</p>
+<hr/>
+<h3 id="стих-4-4">Стих 4</h3>
+<pre><code>на̄мно бала̄д йасйа хи па̄па-буддхир
+на видйате тасйа йамаир хи ш́уддхих̣ [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>на̄мнах̣</strong> — святого имени;</p></li><li><p><strong>бала̄т</strong> — силой, из-за очистительной силы;</p></li><li><p><strong>йасйа</strong> — у кого;</p></li><li><p><strong>хи</strong> — ведь;</p></li><li><p><strong>па̄па-буддхих̣</strong> — понимание о возможности грешить;</p></li><li><p><strong>на видйате</strong> — не существует;</p></li><li><p><strong>тасйа</strong> — его;</p></li><li><p><strong>йамаих̣</strong> — правилами, обетами и видами самообуздания;</p></li><li><p><strong>хи</strong> — поистине;</p></li><li><p><strong>ш́уддхих̣</strong> — очищение;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Тот, чей разум осквернён мыслью о том, что можно совершать грехи, пользуясь очистительной силой святого имени, поистине никогда не сможет очиститься никакими правилами самообуздания, обетами или наказаниями.</p>
+<hr/>
+<h3 id="стих-5-4">Стих 5</h3>
+<pre><code>дхарма-врата-тйа̄га-хута̄ди-сарва-
+ш́убха-крийа̄-са̄мйам апи прама̄дах̣ [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>дхарма-врата-тйа̄га-хута-а̄ди</strong> — религиозными обетами, отречением, жертвоприношениями и прочим;</p></li><li><p><strong>сарва</strong> — со всевозможными;</p></li><li><p><strong>ш́убха-крийа̄</strong> — приносящими хорошую карму действиями;</p></li><li><p><strong>са̄мйам</strong> — отождествление, приравнивание;</p></li><li><p><strong>апи</strong> — также;</p></li><li><p><strong>прама̄дах̣</strong> — невнимательность, беззаботность;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Оскорблением святого имени является приравнивание его повторения ко всевозможным благоприятным кармическим действиям — религиозным обетам, отречению и ведическим жертвоприношениям, а также невнимательность и рассеянность при воспевании.</p>
+<hr/>
+<h3 id="стих-6-4">Стих 6</h3>
+<pre><code>аш́раддадха̄не вимукхе &apos;пй аш́р̣н̣вати
+йаш́ чопадеш́ах̣ ш́ива-на̄ма̄пара̄дхах̣ [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>аш́раддадха̄не</strong> — неверующему;</p></li><li><p><strong>вимукхе</strong> — враждебно настроенному;</p></li><li><p><strong>апи</strong> — даже;</p></li><li><p><strong>аш́р̣н̣вати</strong> — тому, кто не желает слушать или слушаться;</p></li><li><p><strong>йах̣</strong> — кто;</p></li><li><p><strong>ча</strong> — также;</p></li><li><p><strong>упадеш́ах̣</strong> — даёт наставления;</p></li><li><p><strong>ш́ива-на̄ма-апара̄дхах̣</strong> — совершает оскорбление благотворного святого имени;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Тот, кто даёт наставления о славе святого имени человеку неверующему, враждебно настроенному или не желающему слушать, совершает оскорбление благотворного имени Господа.</p>
+<hr/>
+<h3 id="стих-7-4">Стих 7</h3>
+<pre><code>ш́руте &apos;пи на̄ма-ма̄ха̄тмйе йах̣ прӣти-рахито нарах̣
+ахам̇-мама̄ди-парамо на̄мни со &apos;пй апара̄дха-кр̣т [7]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ш́руте</strong> — когда услышано;</p></li><li><p><strong>апи</strong> — хотя и;</p></li><li><p><strong>на̄ма-ма̄ха̄тмйе</strong> — славу святого имени;</p></li><li><p><strong>йах̣</strong> — кто;</p></li><li><p><strong>прӣти-рахитах̣</strong> — лишённый привязанности и любви;</p></li><li><p><strong>нарах̣</strong> — человек;</p></li><li><p><strong>ахам-мама-а̄ди-парамах̣</strong> — для кого главное ложные «я» и «моё»;</p></li><li><p><strong>на̄мни</strong> — к святому имени;</p></li><li><p><strong>сах̣</strong> — тот;</p></li><li><p><strong>апи</strong> — также;</p></li><li><p><strong>апара̄дха-кр̣т</strong> — оскорбитель;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Тот человек, который, даже услышав о славе и величии святого имени, остаётся лишённым любви к нему и по-прежнему считает самым главным свои ложные представления «я» и «моё», также является оскорбителем святого имени.</p>
+<hr/>
+<h3 id="стих-8-3">Стих 8</h3>
+<pre><code>джа̄те на̄ма̄пара̄дхе ту прама̄де ту катхан̃чана
+сада̄ сан̇кӣртайан-на̄ма тад-ека-ш́аран̣о бхавет [8]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>джа̄те</strong> — возникло;</p></li><li><p><strong>на̄ма-апара̄дхе</strong> — оскорбление святого имени;</p></li><li><p><strong>ту</strong> — но;</p></li><li><p><strong>прама̄де</strong> — безумие, оплошность;</p></li><li><p><strong>ту</strong> — и;</p></li><li><p><strong>катхан̃чана</strong> — так или иначе;</p></li><li><p><strong>сада̄</strong> — всегда;</p></li><li><p><strong>сан̇кӣртайан-на̄ма</strong> — воспевающий с полной сосредоточенностью святое имя;</p></li><li><p><strong>тат-ека-ш́аран̣ах̣</strong> — найдя в нём единственное прибежище и защиту;</p></li><li><p><strong>бхавет</strong> — должно стать;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Если же по оплошности или невнимательности возникло оскорбление святого имени, человеку следует непрестанно воспевать святое имя с глубокой сосредоточенностью, сделав его своим единственным прибежищем и защитой.</p>
+<hr/>
+<h3 id="стих-9">Стих 9</h3>
+<pre><code>на̄ма̄пара̄дха-йукта̄на̄м̇ на̄ма̄нй ева харантй агхам
+авиш́ра̄нти-прайукта̄ни та̄нй ева̄ртха-кара̄н̣и ча [9]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>на̄ма-апара̄дха-йукта̄на̄м</strong> — того, кто связан оскорблениями святого имени;</p></li><li><p><strong>на̄ма̄ни</strong> — святые имена;</p></li><li><p><strong>ева</strong> — несомненно;</p></li><li><p><strong>харанти</strong> — устранят;</p></li><li><p><strong>агхам</strong> — грехи;</p></li><li><p><strong>авиш́ра̄нти-прайукта̄ни</strong> — беспрестанно произносимые;</p></li><li><p><strong>та̄ни</strong> — они;</p></li><li><p><strong>ева</strong> — непременно;</p></li><li><p><strong>артха-кара̄н̣и</strong> — принесут благо и пользу (высшую цель);</p></li><li><p><strong>ча</strong> — также;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Святые имена, произносимые беспрестанно, несомненно устранят грехи даже того, кто совершил оскорбления святого имени, и даруют ему достижение высшей духовной цели.</p>
+<hr/>
+<h2 id="6-шри-вайшнава-пранама">6. Шри Вайшнава-пранама</h2>
+<p><strong>Автор / Источник:</strong> <em>Традиционная вайшнавская пранама-мантра</em></p>
+<h3 id="стих-1-6">Стих 1</h3>
+<pre><code>ва̄н̃чха̄-калпатарубхйаш́ ча кр̣па̄-синдхубхйа ева ча
+патита̄на̄м̇ па̄ванебхйо ваиш̣н̣авебхйо намо намах̣ [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ва̄н̃чха̄-калпа-тарубхйах̣</strong> — тем, кто подобны древам желаний, исполняющим все чаяния;</p></li><li><p><strong>ча</strong> — и;</p></li><li><p><strong>кр̣па̄-синдхубхйах̣</strong> — океанам беспричинной милости;</p></li><li><p><strong>ева</strong> — непременно;</p></li><li><p><strong>ча</strong> — также;</p></li><li><p><strong>патита̄на̄м</strong> — всех падших душ;</p></li><li><p><strong>па̄ванебхйах̣</strong> — спасителям и очистителям;</p></li><li><p><strong>ваиш̣н̣авебхйах̣</strong> — преданным Господа Вишну (вайшнавам);</p></li><li><p><strong>намо намах̣</strong> — почтительные поклоны снова и снова;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Я приношу свои почтительные поклоны всем вайшнавам, преданным Господа. Они подобны древам желаний, способным исполнить любые духовные стремления, полны океанов милости и спасают падшие обусловленные души.</p>
+<hr/>
+<h2 id="7-шикшаштака">7. Шикшаштака</h2>
+<p><strong>Автор / Источник:</strong> <em>Шри Чайтанья Махапрабху</em></p>
+<h3 id="стих-1-7">Стих 1</h3>
+<pre><code>чето-дарпан̣а-ма̄рджанам̇ бхава-маха̄-да̄ва̄гни-нирва̄пан̣ам̇
+ш́рейах̣-каирава-чандрика̄-витаран̣ам̇ видйа̄-вадхӯ-джӣванам
+а̄нанда̄мбудхи-вардханам̇ прати-падам̇ пӯрн̣а̄мр̣та̄сва̄данам̇
+сарва̄тма-снапанам̇ парам̇ виджайате ш́рӣ-кр̣ш̣н̣а-сан̇кӣртанам [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>чето-дарпан̣а-ма̄рджанам</strong> — очищающее зеркало сердца;</p></li><li><p><strong>бхава-маха̄-да̄ва̄гни-нирва̄пан̣ам</strong> — гасящее великий пожар материального существования;</p></li><li><p><strong>ш́рейах̣-каирава-чандрика̄-витаран̣ам</strong> — распространяющее лунный свет благословения, раскрывающий белый лотос удачи;</p></li><li><p><strong>видйа̄-вадхӯ-джӣванам</strong> — жизнь невесты трансцендентного знания;</p></li><li><p><strong>а̄нанда̄мбудхи-вардханам</strong> — увеличивающее океан блаженства;</p></li><li><p><strong>прати-падам</strong> — на каждом шагу;</p></li><li><p><strong>пӯрн̣а̄мр̣та̄сва̄данам</strong> — дающее вкусить чистый нектар;</p></li><li><p><strong>сарва̄тма-снапанам</strong> — полностью омывающее душу;</p></li><li><p><strong>парам</strong> — всецело;</p></li><li><p><strong>виджайате</strong> — да побеждает / да славится;</p></li><li><p><strong>ш́рӣ-кр̣ш̣н̣а-сан̇кӣртанам</strong> — совместное воспевание святых имен Господа Кришны;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Да восторжествует шри-кришна-санкиртана, которая очищает зеркало сердца и гасит великий пожар материального существования. Она проливает благодатный лунный свет, заставляющий распуститься белый лотос наивысшего блага, и является самой жизнью трансцендентного знания. Она вздымает океан духовного блаженства, на каждом шагу позволяет в полной мере вкушать чистый нектар и целиком омывает всё естество.</p>
+<hr/>
+<h3 id="стих-2-6">Стих 2</h3>
+<pre><code>на̄мна̄м ака̄ри бахудха̄ ниджа-сарва-ш́актис
+татра̄рпита̄ нийамитах̣ смаран̣е на ка̄лах̣
+ета̄др̣ш́ӣ тава кр̣па̄ бхагаван мама̄пи
+дурдаивам ӣдр̣ш́ам иха̄джани на̄нура̄гах̣ [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>на̄мна̄м</strong> — имен;</p></li><li><p><strong>ака̄ри</strong> — явлено;</p></li><li><p><strong>бахудха̄</strong> — множество;</p></li><li><p><strong>ниджа-сарва-ш́актих̣</strong> — все Свои энергии;</p></li><li><p><strong>татра-арпита̄</strong> — в них вложены;</p></li><li><p><strong>нийамитах̣</strong> — ограничено правилами;</p></li><li><p><strong>смаран̣е</strong> — в памятовании;</p></li><li><p><strong>на</strong> — не;</p></li><li><p><strong>ка̄лах̣</strong> — время;</p></li><li><p><strong>ета̄др̣ш́ӣ</strong> — такая;</p></li><li><p><strong>тава</strong> — Твоя;</p></li><li><p><strong>кр̣па̄</strong> — милость;</p></li><li><p><strong>бхагаван</strong> — о Господь;</p></li><li><p><strong>мама-апи</strong> — хотя мое;</p></li><li><p><strong>дурдаивам</strong> — злосчастье;</p></li><li><p><strong>ӣдр̣ш́ам</strong> — такое;</p></li><li><p><strong>иха-аджани</strong> — здесь возникла;</p></li><li><p><strong>на-анура̄гах̣</strong> — не привязанность;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О мой Господь, Твое святое имя способно даровать благо всем живым существам, и потому у Тебя сотни и миллионы имен, таких как Кришна и Говинда. В эти трансцендентные имена Ты вложил все Свои трансцендентные энергии, и для их повторения нет строгих правил относительно времени. О мой Господь, по Своей милости Ты позволяешь легко приблизиться к Тебе через Твои святые имена, но я настолько неудачлив, что не чувствую к ним никакого влечения.</p>
+<hr/>
+<h3 id="стих-3-6">Стих 3</h3>
+<pre><code>тр̣н̣а̄д апи сунӣчена тарор ива сахиш̣н̣уна̄
+ама̄нина̄ ма̄надена кӣртанӣйах̣ сада̄ харих̣ [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>тр̣н̣а̄т апи</strong> — даже чем травинка;</p></li><li><p><strong>сунӣчена</strong> — будучи смиреннее;</p></li><li><p><strong>тарох̣</strong> — чем дерево;</p></li><li><p><strong>ива</strong> — подобно;</p></li><li><p><strong>сахиш̣н̣уна̄</strong> — более терпеливым;</p></li><li><p><strong>ама̄нина̄</strong> — не ожидающим почтения к себе;</p></li><li><p><strong>ма̄на-дена</strong> — выказывающим уважение другим;</p></li><li><p><strong>кӣртанӣйах̣</strong> — должен воспеваться;</p></li><li><p><strong>сада̄</strong> — всегда;</p></li><li><p><strong>харих̣</strong> — Господь Хари;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Святое имя Господа следует повторять в смиренном состоянии ума, считая себя ниже соломы, валяющейся на улице. Следует быть терпеливее дерева, полностью освободиться от чувства ложного престижа и всегда быть готовым оказать почтение другим. В таком состоянии ума можно воспевать святое имя Господа Хари постоянно.</p>
+<hr/>
+<h3 id="стих-4-5">Стих 4</h3>
+<pre><code>на дханам̇ на джанам̇ на сундарӣм̇ кавита̄м̇ ва̄ джагад-ӣш́а ка̄майе
+мама джанмани джанманӣш́варе бхавата̄д бхактир ахаитукӣ твайи [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>на</strong> — не;</p></li><li><p><strong>дханам̇</strong> — богатства;</p></li><li><p><strong>на</strong> — не;</p></li><li><p><strong>джанам̇</strong> — последователей;</p></li><li><p><strong>на</strong> — не;</p></li><li><p><strong>сундарӣм̇</strong> — прекрасную женщину;</p></li><li><p><strong>кавита̄м̇</strong> — плоды кармической деятельности, описанные языком поэзии;</p></li><li><p><strong>ва̄</strong> — или;</p></li><li><p><strong>джагад-ӣш́а</strong> — о Господь вселенной;</p></li><li><p><strong>ка̄майе</strong> — желаю;</p></li><li><p><strong>мама</strong> — в моем;</p></li><li><p><strong>джанмани</strong> — рождении;</p></li><li><p><strong>джанмани-ӣш́варе</strong> — рождение за рождением, к Верховному Господу;</p></li><li><p><strong>бхавата̄д</strong> — да будет;</p></li><li><p><strong>бхактир</strong> — преданное служение;</p></li><li><p><strong>ахаитукӣ</strong> — беспричинное;</p></li><li><p><strong>твайи</strong> — Тебе;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О Господь вселенной, я не желаю ни богатства, ни последователей, ни прекрасных женщин, воспетых в стихах. Единственное, чего я хочу, — жизнь за жизнью бескорыстно и преданно служить Тебе.</p>
+<hr/>
+<h3 id="стих-5-5">Стих 5</h3>
+<pre><code>айи нанда-тануджа кин̇карам̇ патитам̇ ма̄м̇ виш̣аме бхава̄мбудхау
+кр̣пайа̄ тава па̄да-пан̇каджа-стхита-дхӯлӣ-садр̣ш́ам̇ вичинтайа [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>айи</strong> — о;</p></li><li><p><strong>нанда-тануджа</strong> — о сын Нанды Махараджи;</p></li><li><p><strong>кин̇карам</strong> — слугу;</p></li><li><p><strong>патитам</strong> — падшего;</p></li><li><p><strong>ма̄м</strong> — меня;</p></li><li><p><strong>виш̣аме</strong> — в ужасный;</p></li><li><p><strong>бхава-амбудхау</strong> — в океан материального бытия;</p></li><li><p><strong>кр̣пайа̄</strong> — по беспричинной милости;</p></li><li><p><strong>тава</strong> — Твоих;</p></li><li><p><strong>па̄да-пан̇каджа</strong> — лотосных стоп;</p></li><li><p><strong>стхита</strong> — находящейся у;</p></li><li><p><strong>дхӯлӣ-садр̣ш́ам</strong> — подобным пылинке;</p></li><li><p><strong>вичинтайа</strong> — благоволи считать;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О сын Нанды, я Твой слуга, павший в этот ужасный океан материального бытия. Пожалуйста, по Своей милости прими меня как пылинку у Твоих лотосных стоп.</p>
+<hr/>
+<h3 id="стих-6-5">Стих 6</h3>
+<pre><code>найанам̇ галад-аш́ру-дха̄райа̄ ваданам̇ гадгада-руддхайа̄ гира̄
+пулакаир ничитам̇ вапух̣ када̄ тава на̄ма-грахан̣е бхавиш̣йати [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>найанам</strong> — глаза;</p></li><li><p><strong>галад-аш́ру-дха̄райа̄</strong> — потоками льющихся слез;</p></li><li><p><strong>ваданам</strong> — уста;</p></li><li><p><strong>гадгада-руддхайа̄</strong> — прерывающимся от волнения;</p></li><li><p><strong>гира̄</strong> — голосом;</p></li><li><p><strong>пулакаих̣</strong> — волосками, стоящими дыбом;</p></li><li><p><strong>ничитам</strong> — покрытое;</p></li><li><p><strong>вапух̣</strong> — тело;</p></li><li><p><strong>када̄</strong> — когда;</p></li><li><p><strong>тава</strong> — Твоего;</p></li><li><p><strong>на̄ма-грахан̣е</strong> — при произнесении святого имени;</p></li><li><p><strong>бхавиш̣йати</strong> — будет;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О мой Господь, когда же глаза мои украсятся слезами, непрестанно льющимися при повторении Твоего святого имени? Когда же голос мой задрожит и прервется, а волосы на теле встанут дыбом при произнесении Твоего имени?</p>
+<hr/>
+<h3 id="стих-7-5">Стих 7</h3>
+<pre><code>йуга̄йитам̇ нимеш̣ен̣а чакш̣уш̣а̄ пра̄вр̣ш̣а̄йитам
+ш́ӯнйа̄йитам̇ джагат сарвам̇ говинда-вирахена ме [7]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>йуга̄йитам̇</strong> — тянущимся как целая эпоха;</p></li><li><p><strong>нимеш̣ен̣а</strong> — мгновение;</p></li><li><p><strong>чакш̣уш̣а̄</strong> — из глаз;</p></li><li><p><strong>пра̄вр̣ш̣а̄йитам</strong> — льющим потоками, словно в сезон дождей;</p></li><li><p><strong>ш́ӯнйа̄йитам̇</strong> — кажущийся пустым;</p></li><li><p><strong>джагат</strong> — мир;</p></li><li><p><strong>сарвам̇</strong> — весь;</p></li><li><p><strong>говинда-вирахена</strong> — из-за разлуки с Говиндой;</p></li><li><p><strong>ме</strong> — для меня;</p></li></ul>
+<p><strong>Перевод:</strong><br/>О Говинда! В разлуке с Тобой каждое мгновение кажется мне вечностью. Слёзы льются из моих глаз, словно потоки дождя, и весь мир кажется мне совершенно пустым.</p>
+<hr/>
+<h3 id="стих-8-4">Стих 8</h3>
+<pre><code>а̄ш́лиш̣йа ва̄ па̄да-рата̄м̇ пинаш̣т̣у ма̄м адарш́ана̄н марма-хата̄м̇ кароту ва̄
+йатха̄ татха̄ ва̄ видадха̄ту лампат̣о мат-пра̄н̣а-на̄тхас ту са ева на̄парах̣ [8]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>а̄ш́лиш̣йа</strong> — обняв;</p></li><li><p><strong>ва̄</strong> — или;</p></li><li><p><strong>па̄да-рата̄м</strong> — припавшую к Его стопам;</p></li><li><p><strong>пинаш̣т̣у</strong> — пусть растопчет;</p></li><li><p><strong>ма̄м</strong> — меня;</p></li><li><p><strong>адарш́ана̄т</strong> — скрывшись из виду;</p></li><li><p><strong>марма-хата̄м</strong> — с разбитым сердцем;</p></li><li><p><strong>кароту</strong> — пусть сделает;</p></li><li><p><strong>ва̄</strong> — или;</p></li><li><p><strong>йатха̄</strong> — как;</p></li><li><p><strong>татха̄</strong> — так;</p></li><li><p><strong>ва̄</strong> — или;</p></li><li><p><strong>видадха̄ту</strong> — пусть поступает;</p></li><li><p><strong>лампат̣ах̣</strong> — распутник;</p></li><li><p><strong>мат-пра̄н̣а-на̄тхах̣</strong> — повелитель моей жизни;</p></li><li><p><strong>ту</strong> — но;</p></li><li><p><strong>сах̣</strong> — Он;</p></li><li><p><strong>ева</strong> — только;</p></li><li><p><strong>на-апарах̣</strong> — никто иной;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Пусть Кришна крепко сожмет Меня в Своих объятиях или разобьет Мое сердце, не показываясь Мне на глаза. Он — распутник и волен делать всё, что пожелает, и все же только Он — Господин Моей жизни, и никто иной.</p>
+<hr/>
+<h2 id="8-шри-према-дхвани">8. Шри Према-дхвани</h2>
+<p><strong>Автор / Источник:</strong> <em>Традиционные молитвы прославления</em></p>
+<h3 id="стих-1-8">Стих 1</h3>
+<pre><code>джайа ом̇ виш̣н̣у-па̄да парамахам̇са паривра̄джака̄ча̄рйа
+аш̣т̣оттара-ш́ата ш́рӣ ш́рӣмад а. ч. бхактиведа̄нта сва̄мӣ маха̄ра̄джа прабхупа̄да кӣ джайа!
+исккон сам̇стха̄пака̄ча̄рйа ш́рӣла прабхупа̄да кӣ джайа!
+джайа ом̇ виш̣н̣у-па̄да парамахам̇са паривра̄джака̄ча̄рйа
+аш̣т̣оттара-ш́ата ш́рӣ ш́рӣмад бхактисиддха̄нта сарасватӣ госва̄мӣ маха̄ра̄джа прабхупа̄да кӣ джайа! [1]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>джайа</strong> — слава;</p></li><li><p><strong>ом̇</strong> — священный слог Всевышнего;</p></li><li><p><strong>виш̣н̣у-па̄да</strong> — пребывающему у лотосных стоп Господа Вишну;</p></li><li><p><strong>парамахам̇са</strong> — высшему трансцендентному святому (лебедю);</p></li><li><p><strong>паривра̄джака̄ча̄рйа</strong> — странствующему духовному учителю-проповеднику;</p></li><li><p><strong>аш̣т̣оттара-ш́ата</strong> — ста восьми (почётный титул святости);</p></li><li><p><strong>ш́рӣ ш́рӣмад</strong> — благословенному сиянием духовного величия;</p></li><li><p><strong>а. ч. бхактиведа̄нта сва̄мӣ маха̄ра̄джа прабхупа̄да</strong> — Шриле А.Ч. Бхактиведанте Свами Махарадже Прабхупаде;</p></li><li><p><strong>кӣ джайа</strong> — да восторжествует слава!;</p></li><li><p><strong>искчон сам̇стха̄пака̄ча̄рйа</strong> — ачарье-основателю Международного общества сознания Кришны (ИСККОН);</p></li><li><p><strong>ш́рӣла прабхупа̄да</strong> — Шриле Прабхупаде;</p></li><li><p><strong>бхактисиддха̄нта сарасватӣ госва̄мӣ маха̄ра̄джа прабхупа̄да</strong> — Шриле Бхактисиддханте Сарасвати Госвами Махарадже Прабхупаде;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Вся слава Его Божественной Милости Ом Вишнупаде Парамахамсе Паривраджакачарье Аштоттара-шата Шри Шримад А.Ч. Бхактиведанте Свами Махарадже Прабхупаде, ачарье-основателю Международного общества сознания Кришны! Вся слава Ом Вишнупаде Шриле Бхактисиддханте Сарасвати Госвами Махарадже Прабхупаде!</p>
+<hr/>
+<h3 id="стих-2-7">Стих 2</h3>
+<pre><code>ананта-кот̣и ваиш̣н̣ава-вр̣нда кӣ джайа!
+на̄ма̄ча̄рйа ш́рӣла харида̄са т̣ха̄кура кӣ джайа! [2]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ананта-кот̣и</strong> — бесчисленным миллионам;</p></li><li><p><strong>ваиш̣н̣ава-вр̣нда</strong> — собранию чистых преданных Господа (вайшнавов);</p></li><li><p><strong>кӣ джайа</strong> — слава!;</p></li><li><p><strong>на̄ма̄ча̄рйа</strong> — верховному учителю воспевания святого имени;</p></li><li><p><strong>ш́рӣла харида̄са т̣ха̄кура</strong> — Шриле Харидасу Тхакуру;</p></li><li><p><strong>кӣ джайа</strong> — слава!;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Вся слава бесчисленным миллионам преданных-вайшнавов! Вся слава верховному учителю воспевания Святого Имени — Шриле Харидасу Тхакуру!</p>
+<hr/>
+<h3 id="стих-3-7">Стих 3</h3>
+<pre><code>према-се кахо ш́рӣ-кр̣ш̣н̣а-чаитанйа прабху-нитйа̄нанда
+ш́рӣ-адваита гада̄дхара ш́рӣва̄са̄ди-гаура-бхакта-вр̣нда кӣ джайа! [3]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>према-се</strong> — с экстатической божественной любовью;</p></li><li><p><strong>кахо</strong> — восклицайте;</p></li><li><p><strong>ш́рӣ-кр̣ш̣н̣а-чаитанйа</strong> — Господу Шри Кришне Чайтанье;</p></li><li><p><strong>прабху-нитйа̄нанда</strong> — Господу Нитьянанде;</p></li><li><p><strong>ш́рӣ-адваита</strong> — Шри Адвайте Ачарье;</p></li><li><p><strong>гада̄дхара</strong> — Пандиту Гададхаре;</p></li><li><p><strong>ш́рӣва̄са̄ди</strong> — Шривасе Тхакуру и другим;</p></li><li><p><strong>гаура-бхакта-вр̣нда</strong> — всем спутникам и преданным Господа Гауранги;</p></li><li><p><strong>кӣ джайа</strong> — слава!;</p></li></ul>
+<p><strong>Перевод:</strong><br/>С любовью воскликните: вся слава Шри Кришне Чайтанье, Господу Нитьянанде, Шри Адвайте, Гададхаре, Шривасе и всем преданным спутникам Господа Гауранги!</p>
+<hr/>
+<h3 id="стих-4-6">Стих 4</h3>
+<pre><code>ш́рӣ-ш́рӣ-ра̄дха̄-кр̣ш̣н̣а гопа-гопӣна̄тха ш́йа̄ма-кун̣д̣а ра̄дха̄-кун̣д̣а гири-говардхана кӣ джайа!
+ш́рӣ вр̣нда̄вана-дха̄ма кӣ джайа! ш́рӣ навадвӣпа-ма̄йа̄пура-дха̄ма кӣ джайа!
+ш́рӣ джаганна̄тха пурӣ кш̣етра-дха̄ма кӣ джайа! [4]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ш́рӣ-ш́рӣ-ра̄дха̄-кр̣ш̣н̣а</strong> — Их Светлостям Шри Шри Радхе и Кришне;</p></li><li><p><strong>гопа-гопӣна̄тха</strong> — юным пастушкам и повелителю пастушек (Гопинатхе);</p></li><li><p><strong>ш́йа̄ма-кун̣д̣а</strong> — священному озеру Шьяма-кунда;</p></li><li><p><strong>ра̄дха̄-кун̣д̣а</strong> — святому озеру Радха-кунда;</p></li><li><p><strong>гири-говардхана</strong> — царю холмов Говардхану;</p></li><li><p><strong>ш́рӣ вр̣нда̄вана-дха̄ма</strong> — священной обители Шри Вриндаван;</p></li><li><p><strong>ш́рӣ навадвӣпа-ма̄йа̄пура-дха̄ма</strong> — священной обители Шри Навадвипа-Маяпур;</p></li><li><p><strong>ш́рӣ джаганна̄тха пурӣ кш̣етра-дха̄ма</strong> — святой обители Шри Джаганнатха Пури;</p></li><li><p><strong>кӣ джайа</strong> — слава!;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Вся слава Их Светлостям Шри Шри Радхе и Кришне, пастушкам и гопи, Шьяма-кунде, Радха-кунде и холму Говардхана! Вся слава священной Шри Вриндавана-дхаме! Вся слава Шри Навадвипа-Маяпур-дхаме! Вся слава обители Шри Джаганнатха Пури!</p>
+<hr/>
+<h3 id="стих-5-6">Стих 5</h3>
+<pre><code>ган̇га̄-ма̄йӣ кӣ джайа! йамуна̄-ма̄йӣ кӣ джайа!
+туласӣ-девӣ кӣ джайа! бхакти-девӣ кӣ джайа!
+ш́рӣ хари-на̄ма сан̇кӣртана-йаджн̃а кӣ джайа!
+самавета бхакта-вр̣нда кӣ джайа!
+гаура-према̄нанде хари-харибол! [5]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>ган̇га̄-ма̄йӣ</strong> — матери Ганге;</p></li><li><p><strong>йамуна̄-ма̄йӣ</strong> — матери Ямуне;</p></li><li><p><strong>туласӣ-девӣ</strong> — священной Туласи-деви;</p></li><li><p><strong>бхакти-девӣ</strong> — богине преданности Бхакти-деви;</p></li><li><p><strong>ш́рӣ хари-на̄ма сан̇кӣртана-йаджн̃а</strong> — совместному воспеванию святых имён Господа Хари;</p></li><li><p><strong>самавета бхакта-вр̣нда</strong> — всем собравшимся преданным;</p></li><li><p><strong>гаура-према̄нанде</strong> — в экстазе божественной любви Господа Гауры;</p></li><li><p><strong>хари-харибол</strong> — воспевайте святые имена Господа Хари!;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Вся слава матери Ганге! Вся слава матери Ямуне! Вся слава Шримати Туласи-деви! Вся слава Бхакти-деви! Вся слава совместному воспеванию святых имен Господа — Шри Хари-нама санкиртана-ягье! Вся слава всем собравшимся преданным! В экстазе божественной любви Гауранги воспевайте: Хари-Харибол!</p>
+<hr/>
+<h3 id="стих-6-6">Стих 6</h3>
+<pre><code>Вся слава собравшимся преданным! Харе Кришна!
+Вся слава собравшимся преданным! Харе Кришна!
+Вся слава собравшимся преданным! Харе Кришна!
+Вся слава Шри Гуру и Гауранге!
+Вся слава Шриле Прабхупаде! [6]</code></pre>
+<p><strong>Пословный разбор:</strong></p>
+<ul><li><p><strong>самавета бхакта-вр̣нда</strong> — всем собравшимся преданным;</p></li><li><p><strong>харе кр̣ш̣н̣а</strong> — святому имени Харе Кришна;</p></li><li><p><strong>ш́рӣ гуру</strong> — духовному учителю;</p></li><li><p><strong>гаура̄н̇га</strong> — Господу Гауранге;</p></li><li><p><strong>ш́рӣла прабхупа̄да</strong> — Его Божественной Милости Шриле Прабхупаде;</p></li><li><p><strong>джайа</strong> — вся слава!;</p></li></ul>
+<p><strong>Перевод:</strong><br/>Вся слава собравшимся преданным! Харе Кришна!<br/>Вся слава собравшимся преданным! Харе Кришна!<br/>Вся слава собравшимся преданным! Харе Кришна!<br/>Вся слава Шри Гуру и Гауранге!<br/>Вся слава Шриле Прабхупаде!</p>
+<hr/>
+  </main>
+  </div>
+
+  <button class="floating-btn" onclick="scrollToTop()" title="Наверх">↑</button>
+
+<script>
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const id = decodeURIComponent(href.slice(1));
+    const target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (history.pushState) {
+      history.pushState(null, '', href);
+    }
+  });
+
+  (function() {
+    try {
+      const savedTheme = localStorage.getItem('tp_theme');
+      if (savedTheme) {
+        const radio = document.getElementById(savedTheme);
+        if (radio) radio.checked = true;
+      }
+      const savedSize = localStorage.getItem('tp_size');
+      if (savedSize) {
+        const radio = document.getElementById(savedSize);
+        if (radio) radio.checked = true;
+      }
+      document.querySelectorAll('input[name="theme"]').forEach(r => {
+        r.addEventListener('change', () => localStorage.setItem('tp_theme', r.id));
+      });
+      document.querySelectorAll('input[name="size"]').forEach(r => {
+        r.addEventListener('change', () => localStorage.setItem('tp_size', r.id));
+      });
+    } catch (_) {}
+  })();
+</script>
+</body>
+</html>

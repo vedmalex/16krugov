@@ -1,0 +1,2253 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Прототип экрана чтения джапы — 16 кругов</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3eadc;
+      --card: #fffaf3;
+      --ink: #241910;
+      --muted: #6d5848;
+      --line: #e2d3c0;
+      --accent: #b8431f;
+      --accent-ink: #fff7f2;
+      --surface-soft: #eadcc9;
+      --shadow: 0 18px 40px rgb(60 32 12 / 10%);
+      --reading-scale: 1;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #1b1612;
+      --card: #28211b;
+      --ink: #f6efe6;
+      --muted: #cbb8a6;
+      --line: #43362c;
+      --accent: #e07a45;
+      --accent-ink: #1b120e;
+      --surface-soft: #332a23;
+      --shadow: 0 18px 40px rgb(0 0 0 / 35%);
+    }
+
+    :root[data-theme="stand-dim"] {
+      color-scheme: dark;
+      --paper: #120e0b;
+      --card: #17120e;
+      --ink: #d8cab8;
+      --muted: #9f8d7c;
+      --line: #2d231c;
+      --accent: #c96b3b;
+      --accent-ink: #140d09;
+      --surface-soft: #201914;
+      --shadow: none;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans", system-ui, -apple-system, sans-serif;
+      background: #171412;
+      color: #f3eadc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    button, select, input { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    /* Top Lab Bar (Prototype Controls) */
+    .lab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      padding: 10px 16px;
+      background: #231d19;
+      border-bottom: 1px solid #3c3129;
+      font-size: 13px;
+    }
+    .lab-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .lab-label {
+      color: #cbb8a6;
+      font-size: 12px;
+      margin-right: 2px;
+    }
+    .lab-btn {
+      border: 1px solid #4d3f35;
+      background: #2d2520;
+      color: #f6efe6;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 12.5px;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .lab-btn:hover { border-color: #e07a45; }
+    .lab-btn[aria-pressed="true"] {
+      background: #e07a45;
+      color: #1b120e;
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .lab-select {
+      background: #2d2520;
+      color: #f6efe6;
+      border: 1px solid #4d3f35;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 12.5px;
+    }
+
+    /* Stage Viewport */
+    .lab-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    /* Device Frames */
+    .device-frame {
+      position: relative;
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: width 220ms ease, height 220ms ease, border-radius 220ms ease;
+    }
+    .device-frame.form-desktop {
+      width: min(1040px, 100%);
+      height: min(680px, calc(100vh - 110px));
+    }
+    .device-frame.form-phone-landscape,
+    .device-frame.form-stand {
+      width: min(812px, 100%);
+      height: 390px;
+      border-radius: 34px;
+      border: 8px solid #0e0c0a;
+    }
+    .device-frame.form-phone-portrait {
+      width: 390px;
+      height: min(720px, calc(100vh - 110px));
+      border-radius: 34px;
+      border: 8px solid #0e0c0a;
+    }
+    .device-frame.form-watch-round {
+      width: 248px;
+      height: 248px;
+      border-radius: 50%;
+      border: 10px solid #0e0c0a;
+    }
+    .device-frame.form-watch-rect {
+      width: 226px;
+      height: 274px;
+      border-radius: 44px;
+      border: 10px solid #0e0c0a;
+    }
+
+    /* Simulated Safe-area Notch for Phone Landscape */
+    .notch-indicator {
+      display: none;
+    }
+    .show-notch .form-phone-landscape .notch-indicator,
+    .show-notch .form-stand .notch-indicator {
+      display: block;
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 92px;
+      border-radius: 999px;
+      background: #0e0c0a;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .show-notch .form-phone-landscape .app-root,
+    .show-notch .form-stand .app-root {
+      padding-left: 24px;
+      padding-right: 12px;
+    }
+
+    /* App Inside Device */
+    .app-root {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+    .muted { color: var(--muted); }
+
+    .btn-ghost, .btn-solid, .chip {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      min-height: 36px;
+      transition: border-color 140ms ease, background 140ms ease, opacity 140ms ease;
+    }
+    .btn-ghost:hover, .chip:hover { border-color: var(--accent); }
+    .btn-solid {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .btn-solid:disabled, .btn-ghost:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .icon-btn:hover { border-color: var(--accent); }
+    .icon-btn.active-pause {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 16%, var(--card));
+    }
+
+    /* Banners */
+    .banner {
+      padding: 8px 14px;
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+    .banner.alert {
+      background: color-mix(in srgb, var(--accent) 16%, var(--card));
+      border-color: var(--accent);
+    }
+
+    /* Header Bar (Desktop & Portrait) */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper);
+      flex-shrink: 0;
+    }
+    .top-bar-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+    }
+    .progress-track {
+      width: min(280px, 100%);
+      height: 6px;
+      border-radius: 999px;
+      background: var(--line);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 240ms ease;
+    }
+    .timers-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .pause-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Desktop Reading Layout */
+    .desktop-main {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 54px minmax(0, 720px) 54px;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 16px 8px;
+    }
+    .edge-nav-btn {
+      align-self: center;
+      height: 160px;
+      width: 48px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--accent);
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edge-nav-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .edge-nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+    .reading-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px 26px;
+      overflow-y: auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+    .form-stand .reading-card {
+      border-color: transparent;
+      box-shadow: none;
+    }
+    .card-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+    .card-index {
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .card-title {
+      margin: 0;
+      font-size: calc(1.18rem * var(--reading-scale));
+      line-height: 1.35;
+    }
+    .sanskrit-block {
+      margin: 0;
+      font-family: inherit;
+      white-space: pre-wrap;
+      font-size: calc(1.06rem * var(--reading-scale));
+      line-height: 1.75;
+      overflow-wrap: anywhere;
+    }
+    .translation-block {
+      margin: 0;
+      font-size: calc(1.02rem * var(--reading-scale));
+      line-height: 1.68;
+      max-width: 62ch;
+      overflow-wrap: anywhere;
+    }
+    .instruction-block {
+      margin: 0;
+      color: var(--muted);
+      font-size: calc(0.94rem * var(--reading-scale));
+      line-height: 1.6;
+      max-width: 62ch;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .bottom-action-bar {
+      padding: 12px 16px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--paper);
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .primary-next-btn {
+      width: min(720px, 100%);
+      min-height: 56px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    /* Phone Landscape Split Layout */
+    .landscape-split {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 238px;
+      gap: 12px;
+      padding: 10px 12px;
+    }
+    .landscape-text-col {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .form-stand .landscape-text-col { border-color: var(--line); }
+    .landscape-text-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .landscape-text-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .landscape-control-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 0;
+      padding: 4px 2px;
+    }
+    .control-status-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .round-big {
+      font-size: 19px;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .timer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+    }
+    .timer-row strong { font-size: 18px; }
+    .icon-row {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .landscape-next-btn {
+      width: 100%;
+      min-height: 62px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.2;
+      padding: 8px 10px;
+    }
+    .is-paused-dim { opacity: 0.72; }
+
+    /* Phone Portrait */
+    .portrait-main {
+      flex: 1;
+      min-height: 0;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .portrait-main .reading-card {
+      flex: 1;
+      padding: 14px 16px;
+    }
+
+    /* Watch Layout */
+    .watch-shell {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 22px 18px;
+      text-align: center;
+      position: relative;
+    }
+    .form-watch-rect .watch-shell {
+      padding: 14px 14px 14px;
+    }
+    .watch-mode-pills {
+      display: flex;
+      gap: 4px;
+    }
+    .watch-dot-btn {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 10.5px;
+      border-radius: 999px;
+      padding: 2px 7px;
+      min-height: 22px;
+    }
+    .watch-dot-btn[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .watch-big-num {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.05;
+    }
+    .watch-text-scroll {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 6px 0;
+      padding: 0 4px;
+    }
+    .watch-action-btn {
+      position: relative;
+      width: 88%;
+      min-height: 44px;
+      border-radius: 999px;
+      font-size: 13px;
+      overflow: hidden;
+    }
+    .hold-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      background: rgb(255 255 255 / 26%);
+      width: 0%;
+      pointer-events: none;
+    }
+    .watch-hw-btn {
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e07a45;
+      color: #1b120e;
+      border: 2px solid #0e0c0a;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 4px;
+      writing-mode: vertical-rl;
+      z-index: 30;
+    }
+
+    /* Overlays (Full Text, Settings, History, Layouts) */
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgb(16 12 8 / 55%);
+      display: flex;
+      justify-content: flex-end;
+      z-index: 40;
+    }
+    .overlay-panel {
+      width: min(440px, 100%);
+      height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      border-left: 1px solid var(--line);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+    .overlay-header h3 { margin: 0; font-size: 16px; }
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      font-size: 13.5px;
+    }
+    .check-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+    /* Toast */
+    .undo-toast {
+      position: absolute;
+      left: 50%;
+      bottom: 74px;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 8px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
+      z-index: 35;
+      white-space: nowrap;
+    }
+    .undo-toast button {
+      border: 0;
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* Empty & Completion */
+    .empty-box {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .round-list {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 4px;
+      font-size: 13.5px;
+    }
+
+    /* Articulation & Preparation Integration */
+    .series-pills {
+      display: flex;
+      gap: 4px;
+      height: 8px;
+      width: 100%;
+    }
+    .series-pills.thin { height: 5px; }
+    .series-pills button,
+    .series-pills span {
+      flex: 1;
+      height: 100%;
+      border: 0;
+      padding: 0;
+      border-radius: 999px;
+      background: var(--line);
+      transition: background 140ms ease;
+    }
+    .series-pills .current { background: var(--accent); }
+    .series-pills .done { background: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+    .stage-area {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      overflow-y: auto;
+    }
+    .stage-tokens {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px 14px;
+      font-size: calc(1.55rem * var(--reading-scale));
+      line-height: 1.45;
+      text-align: center;
+      max-width: 100%;
+    }
+    .stage-tokens.is-text {
+      font-size: calc(1.12rem * var(--reading-scale));
+      line-height: 1.85;
+      gap: 4px 6px;
+      max-width: 58ch;
+      text-align: left;
+      justify-content: flex-start;
+    }
+    .word-line {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--paper) 45%, var(--card));
+    }
+    .stage-tokens.is-text .word-line {
+      border-color: transparent;
+      background: transparent;
+      padding: 0 2px;
+    }
+    .token {
+      padding: 2px 4px;
+      border-radius: 8px;
+      transition: color 180ms ease, transform 180ms ease, text-shadow 180ms ease, background 180ms ease;
+    }
+    .token.active {
+      color: var(--accent);
+      font-weight: 700;
+      transform: translateY(-2px) scale(1.08);
+      text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+    .form-stand .token.active {
+      text-shadow: none;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+    .token.preview {
+      color: var(--accent);
+      opacity: 0.72;
+    }
+    .pause-veil {
+      position: absolute;
+      inset: 0;
+      background: color-mix(in srgb, var(--paper) 78%, transparent);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+      border-radius: 18px;
+    }
+    .countdown-badge {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .prep-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 720px) {
+      .prep-grid { grid-template-columns: 1fr; }
+    }
+    .form-phone-portrait .prep-grid { grid-template-columns: 1fr; }
+    .prep-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .prep-card h3 { margin: 0; font-size: 16px; }
+    .target-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .target-chips .chip[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .watch-token-focus {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .watch-neighbors {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="lab-bar" aria-label="Параметры прототипа">
+    <div class="lab-group">
+      <span class="lab-label">Этап:</span>
+      <button class="lab-btn" data-screen="prep" aria-pressed="false">Подготовка</button>
+      <button class="lab-btn" data-screen="warmup" aria-pressed="false">Разминка (артикул.)</button>
+      <button class="lab-btn" data-screen="japa" aria-pressed="true">Чтение джапы</button>
+    </div>
+
+    <div class="lab-group">
+      <span class="lab-label">Устройство:</span>
+      <button class="lab-btn" data-form="desktop" aria-pressed="true">Компьютер</button>
+      <button class="lab-btn" data-form="phone-landscape" aria-pressed="false">Телефон (горизонт.)</button>
+      <button class="lab-btn" data-form="phone-portrait" aria-pressed="false">Телефон (портрет)</button>
+      <button class="lab-btn" data-form="stand" aria-pressed="false">На подставке</button>
+      <button class="lab-btn" data-form="watch-round" aria-pressed="false">Часы (круглые)</button>
+      <button class="lab-btn" data-form="watch-rect" aria-pressed="false">Часы (прямоуг.)</button>
+    </div>
+
+    <div class="lab-group">
+      <span class="lab-label">Тема:</span>
+      <select class="lab-select" id="themeSelect">
+        <option value="light">Светлая (Paper)</option>
+        <option value="dark">Тёмная (Night)</option>
+        <option value="stand-dim">На подставке (Dim)</option>
+      </select>
+    </div>
+
+    <div class="lab-group">
+      <span class="lab-label">Цель:</span>
+      <select class="lab-select" id="targetSelect">
+        <option value="4">4 круга</option>
+        <option value="8">8 кругов</option>
+        <option value="16" selected>16 кругов</option>
+        <option value="24">24 круга</option>
+      </select>
+    </div>
+
+    <div class="lab-group">
+      <button class="lab-btn" id="toggleNotchBtn" aria-pressed="true">Вырез/Safe-area</button>
+      <button class="lab-btn" id="simRecoveryBtn">Симул. восстановления</button>
+      <button class="lab-btn" id="simStorageErrBtn">Симул. ошибки записи</button>
+      <button class="lab-btn" id="resetSessionBtn">Сброс сессии</button>
+    </div>
+  </header>
+
+  <main class="lab-stage show-notch" id="labStage">
+    <div class="device-frame form-desktop" id="deviceFrame">
+      <div class="notch-indicator" aria-hidden="true"></div>
+      <div class="app-root" id="appRoot"></div>
+    </div>
+  </main>
+
+  <script>
+    const TEXT_BANK = [
+      {
+        id: "lk-1",
+        work: "Лучшие круги",
+        ref: "Настрой 1",
+        title: "Начало и очищение намерения",
+        sanskrit: "oṁ ajñāna-timirāndhasya jñānāñjana-śalākayā\ncakṣur unmīlitaṁ yena tasmai śrī-gurave namaḥ",
+        translation: "Я в глубоком почтении склоняюсь перед духовным учителем, который открыл мои слепые глаза факелом знания.",
+        instruction: "Первый круг — время оставить спешку. Сядьте ровно, услышьте звук каждого слова мантры: Харе Кришна.",
+        fullContext: "Полный комментарий: первый круг задаёт тон всей утренней практике. Не пытайтесь ускорить темп ради количества; главная задача первых минут — усмирить суету ума и просить у гуру и Кришны внимательного слуха."
+      },
+      {
+        id: "lk-2",
+        work: "Лучшие круги",
+        ref: "Настрой 2",
+        title: "Молитвенное смирение (Шикшаштака 3)",
+        sanskrit: "tṛṇād api sunīcena taror api sahiṣṇunā\namāninā mānadena kīrtanīyaḥ sadā hariḥ",
+        translation: "Следует повторять святое имя Господа в смиренном состоянии ума, считая себя ниже травинки на улице, будучи терпеливее дерева, не ожидая почтения к себе и выражая почтение другим.",
+        instruction: "Повторяйте не как судья, оценивающий своё совершенство, а как нищий, искренне умоляющий о милости.",
+        fullContext: "Шикшаштака, стих 3 (Чайтанья-чаритамрита, Ади, 17.31). Смирение устраняет главное препятствие к слушанию — гордыню и нетерпение ума, позволяя сердцу открыться звуку мантры."
+      },
+      {
+        id: "lk-3",
+        work: "Лучшие круги",
+        ref: "Настрой 3",
+        title: "Слышать каждое имя",
+        sanskrit: "śravaṇaṁ kīrtanaṁ viṣṇoḥ smaraṇaṁ pāda-sevanam\narcanaṁ vandanaṁ dāsyaṁ sakhyam ātma-nivedanam",
+        translation: "Слушание и воспевание святого имени Господа Вишну, памятование, служение Его лотосным стопам...",
+        instruction: "Когда ум убегает в планы дня, мягко возвращайте внимание к губам и ушам: произнести чётко — услышать отчётливо.",
+        fullContext: "Шримад-Бхагаватам 7.5.23 — девять методов преданного служения. Из них слушание (шравана) и повторение (киртана) — основа джапы: ум опирается на ясную артикуляцию и внимательный слух."
+      },
+      {
+        id: "br-12",
+        work: "Бхакти-расаяна",
+        ref: "БР 1.12",
+        title: "Чистота бескорыстного зова",
+        sanskrit: "na dhanaṁ na janaṁ na sundarīṁ kavitāṁ vā jagad-īśa kāmaye\nmama janmani janmanīśvare bhavatād bhaktir ahaitukī tvayi",
+        translation: "О Господь Вселенной, я не желаю ни богатства, ни последователей, ни красивой женщины, ни славы поэта. Единственное, о чём я молю, — да пробудится во мне беспричинная преданность Тебе, рождение за рождением.",
+        instruction: "Длинная шлока для углублённых кругов: на экране она должна переноситься по ширине и удобно прокручиваться без перекрытия кнопками.",
+        fullContext: "Шикшаштака, стих 4. На стадии углубления (средние круги при цели 16–64) этот стих помогает очистить мотив повторения от ожидания материальных результатов или скорого комфорта."
+      },
+      {
+        id: "lk-16",
+        work: "Лучшие круги",
+        ref: "Настрой 16",
+        title: "Благодарность и завершение обеты",
+        sanskrit: "nāmāparādha-yuktānāṁ nāmāny eva haranty agham\naviśrānti-prayuktāni tāny evārtha-karāṇi ca",
+        translation: "Даже для тех, кто совершает оскорбления святого имени, само святое имя, повторяемое непрестанно, уничтожает все грехи и дарует высшее благо.",
+        instruction: "Последний круг: поблагодарите за возможность повторить обет и попросите прощения за невнимательность.",
+        fullContext: "Падма Пурана (цит. по гл. 99 книги «16 кругов — Лучшие круги джапы»). Даже несовершенная джапа, совершённая с искренним усилием и осознанием своей зависимости от милости святого имени, очищает сердце."
+      }
+    ];
+
+    const PRESET_LAYOUTS = {
+      "canon": { id: "canon", title: "Канон · Лучшие круги + Расаяна", map: ["lk-1", "lk-2", "lk-3", "br-12", "lk-16"] },
+      "rasayana": { id: "rasayana", title: "Погружение · Бхакти-расаяна", map: ["br-12", "lk-2", "lk-3", "lk-1", "lk-16"] },
+      "custom": { id: "custom", title: "Моя подборка (настраиваемая)", map: ["lk-2", "br-12", "lk-1", "lk-3", "lk-16"] }
+    };
+
+    const ARTICULATION_EXERCISES = [
+      {
+        id: "v13",
+        category: "Гласные",
+        isText: false,
+        title: "Полная цепочка гласных",
+        difficulty: 2,
+        words: [["А"], ["И"], ["Э"], ["О"], ["У"], ["Ы"], ["Е"], ["Я"], ["Ё"], ["Ю"]],
+        note: "Чётко раскрывайте рот на каждой гласной без спешки и зажатия челюсти."
+      },
+      {
+        id: "c01-syllables",
+        category: "Губные · П–Б–М",
+        isText: false,
+        title: "Губные · Слоги",
+        difficulty: 1,
+        words: [["ПА", "БА", "МА"], ["ПО", "БО", "МО"], ["ПУ", "БУ", "МУ"]],
+        note: "Смыкание губ и мягкое переключение между глухим, звонким и носовым звуком."
+      },
+      {
+        id: "c01-switches",
+        category: "Губные · П–Б–М",
+        isText: false,
+        title: "Губные · Переходы",
+        difficulty: 3,
+        words: [["ПА", "БА", "ПА", "МА"], ["БРА", "ПРА", "БРА", "ПРА"]],
+        note: "Точный артикуляционный переход на стыке согласных."
+      },
+      {
+        id: "tt-01",
+        category: "Скороговорка",
+        isText: true,
+        title: "Путана (игры Кришны)",
+        difficulty: 4,
+        words: "Путана приплелась, припрятала приторное пойло, приподняла покрывало, приблизилась к прекрасному Пастушку. Притворилась приветливой, да просчиталась: прекрасный Пастушок притворную прелесть распознал и Путану победил."
+          .split(" ").map((w) => [w]),
+        note: "Отработка твёрдых и мягких ПР / ПЛ / БР на плавном дыхании."
+      }
+    ];
+
+    const state = {
+      screen: "japa", // prep | warmup | japa
+      form: "desktop",
+      theme: "light",
+      target: 16,
+      round: 4,
+      durations: [392000, 415000, 402000],
+      roundElapsedMs: 142000,
+      totalElapsedMs: 1209000,
+      paused: false,
+      completed: false,
+      showRecoveryBanner: false,
+      showStorageError: false,
+      japaStarted: true,
+
+      layoutId: "canon",
+      customMap: ["lk-2", "br-12", "lk-1", "lk-3", "lk-16"],
+      textIndex: 3, // 0-based in active layout
+      textLocked: false,
+
+      display: {
+        sanskrit: true,
+        translation: true,
+        instruction: true,
+        italicSanskrit: true,
+        italicTranslation: false,
+        italicInstruction: true,
+        scale: 1
+      },
+
+      warmup: {
+        exIndex: 1, // start on Губные · Слоги for vivid demo
+        phase: "running", // idle | countdown | running | resting | paused | completed
+        heldPhase: null,
+        countdownBeat: 2,
+        tokenIndex: 1,
+        round: 1,
+        rounds: 3,
+        tutor: true,
+        bpm: 64,
+        textBpm: 112,
+        favorites: ["c01-syllables", "tt-01"],
+        timerId: null
+      },
+
+      watchMode: "round", // round | timer | text
+      watchProtection: "hold", // hold | undo
+      overlay: null, // null | fulltext | settings | history | layouts | warmupSettings
+      undoSnapshot: null,
+      undoTimerId: null,
+      lastNextClickAt: 0
+    };
+
+    function formatTime(ms) {
+      const totalSec = Math.floor(Math.max(0, ms) / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      return h > 0
+        ? `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+        : `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function getActiveSequence() {
+      const seqIds = state.layoutId === "custom" ? state.customMap : PRESET_LAYOUTS[state.layoutId].map;
+      return Array.from({ length: state.target }, (_, idx) => {
+        if (idx === state.target - 1) return TEXT_BANK.find((t) => t.id === "lk-16");
+        const id = seqIds[idx % seqIds.length];
+        return TEXT_BANK.find((t) => t.id === id) || TEXT_BANK[0];
+      });
+    }
+
+    function getAutoIndexForRound(roundNum) {
+      return Math.min(state.target - 1, Math.max(0, roundNum - 1));
+    }
+
+    // Tick every second when active
+    setInterval(() => {
+      if (state.screen === "japa" && !state.paused && !state.completed && !state.showRecoveryBanner) {
+        state.roundElapsedMs += 1000;
+        state.totalElapsedMs += 1000;
+        updateTimersOnly();
+      }
+    }, 1000);
+
+    function currentWarmupExercise() {
+      return ARTICULATION_EXERCISES[state.warmup.exIndex] || ARTICULATION_EXERCISES[0];
+    }
+
+    function stopWarmupTimer() {
+      if (state.warmup.timerId) {
+        clearTimeout(state.warmup.timerId);
+        state.warmup.timerId = null;
+      }
+    }
+
+    function scheduleWarmupTick() {
+      stopWarmupTimer();
+      const w = state.warmup;
+      if (state.screen !== "warmup" || !w.tutor) return;
+      if (w.phase !== "countdown" && w.phase !== "running" && w.phase !== "resting") return;
+      const ex = currentWarmupExercise();
+      const bpm = ex.isText ? w.textBpm : w.bpm;
+      const beatMs = Math.round(60000 / Math.max(30, Math.min(240, bpm)));
+      const delay = w.phase === "resting" ? beatMs * 1.4 : ex.isText ? Math.round(beatMs * 0.85) : beatMs;
+      w.timerId = setTimeout(() => {
+        if (state.screen !== "warmup") return;
+        if (w.phase === "countdown") {
+          if (w.countdownBeat > 1) {
+            w.countdownBeat -= 1;
+          } else {
+            w.phase = "running";
+            w.tokenIndex = 0;
+          }
+        } else if (w.phase === "resting") {
+          w.phase = "running";
+          w.tokenIndex = 0;
+        } else if (w.phase === "running") {
+          const totalTokens = ex.words.reduce((sum, word) => sum + word.length, 0);
+          if (w.tokenIndex + 1 < totalTokens) {
+            w.tokenIndex += 1;
+          } else if (w.round < w.rounds) {
+            w.round += 1;
+            w.phase = "resting";
+          } else {
+            w.phase = "completed";
+            render();
+            return;
+          }
+        }
+        render();
+        scheduleWarmupTick();
+      }, delay);
+    }
+
+    function toggleWarmupPlay() {
+      const w = state.warmup;
+      if (!w.tutor) return;
+      if (w.phase === "running" || w.phase === "countdown" || w.phase === "resting") {
+        w.heldPhase = w.phase;
+        w.phase = "paused";
+        stopWarmupTimer();
+      } else if (w.phase === "paused") {
+        w.phase = w.heldPhase || "running";
+        w.heldPhase = null;
+        scheduleWarmupTick();
+      } else {
+        w.phase = "countdown";
+        w.countdownBeat = 2;
+        w.round = 1;
+        w.tokenIndex = 0;
+        scheduleWarmupTick();
+      }
+      render();
+    }
+
+    function resetWarmupExercise() {
+      const w = state.warmup;
+      stopWarmupTimer();
+      w.phase = "idle";
+      w.heldPhase = null;
+      w.round = 1;
+      w.tokenIndex = 0;
+      render();
+    }
+
+    function selectWarmupExercise(idx) {
+      const clamped = Math.min(ARTICULATION_EXERCISES.length - 1, Math.max(0, idx));
+      state.warmup.exIndex = clamped;
+      state.warmup.round = 1;
+      state.warmup.tokenIndex = 0;
+      state.warmup.phase = state.warmup.tutor ? "countdown" : "idle";
+      state.warmup.countdownBeat = 2;
+      render();
+      if (state.warmup.tutor) scheduleWarmupTick();
+    }
+
+    function openScreen(nextScreen) {
+      if (nextScreen === "warmup") {
+        if (state.screen === "japa" && !state.completed) {
+          state.paused = true; // Auto-pause Japa timer during warmup break
+        }
+        state.screen = "warmup";
+        state.overlay = null;
+        render();
+        if (state.warmup.tutor && (state.warmup.phase === "running" || state.warmup.phase === "countdown" || state.warmup.phase === "resting")) {
+          scheduleWarmupTick();
+        }
+      } else {
+        stopWarmupTimer();
+        state.screen = nextScreen;
+        state.overlay = null;
+        render();
+      }
+    }
+
+    function updateTimersOnly() {
+      document.querySelectorAll("[data-round-timer]").forEach((el) => {
+        el.textContent = formatTime(state.roundElapsedMs);
+      });
+      document.querySelectorAll("[data-total-timer]").forEach((el) => {
+        el.textContent = formatTime(state.totalElapsedMs);
+      });
+    }
+
+    function togglePause() {
+      state.paused = !state.paused;
+      render();
+    }
+
+    function stepText(delta) {
+      const seq = getActiveSequence();
+      const nextIdx = Math.min(seq.length - 1, Math.max(0, state.textIndex + delta));
+      if (nextIdx !== state.textIndex) {
+        state.textIndex = nextIdx;
+        state.textLocked = nextIdx !== getAutoIndexForRound(state.round);
+        render();
+      }
+    }
+
+    function resetToRoundText() {
+      state.textLocked = false;
+      state.textIndex = getAutoIndexForRound(state.round);
+      render();
+    }
+
+    function triggerNextRound() {
+      const now = Date.now();
+      if (now - state.lastNextClickAt < 800) return; // 800ms debounce
+      state.lastNextClickAt = now;
+
+      if (state.round >= state.target) {
+        state.durations.push(state.roundElapsedMs);
+        state.completed = true;
+        state.overlay = null;
+        render();
+        return;
+      }
+
+      // Save undo snapshot
+      if (state.undoTimerId) clearTimeout(state.undoTimerId);
+      state.undoSnapshot = {
+        round: state.round,
+        durations: [...state.durations],
+        roundElapsedMs: state.roundElapsedMs,
+        textIndex: state.textIndex,
+        textLocked: state.textLocked,
+        recordedMs: state.roundElapsedMs
+      };
+
+      state.durations.push(state.roundElapsedMs);
+      state.round += 1;
+      state.roundElapsedMs = 0;
+      if (!state.textLocked) {
+        state.textIndex = getAutoIndexForRound(state.round);
+      }
+
+      state.undoTimerId = setTimeout(() => {
+        state.undoSnapshot = null;
+        render();
+      }, 3000);
+
+      render();
+    }
+
+    function undoNextRound() {
+      if (!state.undoSnapshot) return;
+      if (state.undoTimerId) clearTimeout(state.undoTimerId);
+      state.round = state.undoSnapshot.round;
+      state.durations = state.undoSnapshot.durations;
+      state.roundElapsedMs = state.undoSnapshot.roundElapsedMs;
+      state.textIndex = state.undoSnapshot.textIndex;
+      state.textLocked = state.undoSnapshot.textLocked;
+      state.undoSnapshot = null;
+      render();
+    }
+
+    function renderTextContent(item) {
+      const d = state.display;
+      const nothingVisible = !d.sanskrit && !d.translation && !d.instruction;
+      if (nothingVisible) {
+        return `
+          <div class="empty-box">
+            <strong>Все части текста скрыты</strong>
+            <span class="muted">Включите хотя бы один слой отображения, чтобы видеть настрой.</span>
+            <button class="btn-solid" data-action="restore-text-layers">Показать перевод и настройку</button>
+          </div>
+        `;
+      }
+      return `
+        ${d.sanskrit && item.sanskrit ? `<pre class="sanskrit-block" style="font-style:${d.italicSanskrit ? "italic" : "normal"}">${item.sanskrit}</pre>` : ""}
+        ${d.translation ? `<p class="translation-block" style="font-style:${d.italicTranslation ? "italic" : "normal"}">${item.translation}</p>` : ""}
+        ${d.instruction ? `<p class="instruction-block" style="font-style:${d.italicInstruction ? "italic" : "normal"}">${item.instruction}</p>` : ""}
+      `;
+    }
+
+    function renderOverlay(item, seq) {
+      if (!state.overlay) return "";
+      if (state.overlay === "fulltext") {
+        return `
+          <div class="overlay-backdrop" data-action="close-overlay">
+            <aside class="overlay-panel" onclick="event.stopPropagation()">
+              <div class="overlay-header">
+                <h3>${item.work} · ${item.ref}</h3>
+                <button class="btn-ghost" data-action="close-overlay">Закрыть</button>
+              </div>
+              <p class="muted" style="margin:0;font-size:12.5px">Сессия и таймер продолжают работать в фоне.</p>
+              <h4 style="margin:0">${item.title}</h4>
+              <pre class="sanskrit-block">${item.sanskrit}</pre>
+              <p class="translation-block">${item.translation}</p>
+              <p class="instruction-block">${item.fullContext}</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+                <button class="btn-ghost" data-action="prev-text" ${state.textIndex <= 0 ? "disabled" : ""}>‹ Пред. стих</button>
+                <button class="btn-ghost" data-action="next-text" ${state.textIndex >= seq.length - 1 ? "disabled" : ""}>След. стих ›</button>
+              </div>
+            </aside>
+          </div>
+        `;
+      }
+      if (state.overlay === "settings") {
+        const d = state.display;
+        return `
+          <div class="overlay-backdrop" data-action="close-overlay">
+            <aside class="overlay-panel" onclick="event.stopPropagation()">
+              <div class="overlay-header">
+                <h3>Настройки чтения</h3>
+                <button class="btn-ghost" data-action="close-overlay">Готово</button>
+              </div>
+              <div>
+                <strong style="font-size:13px">Показывать слои текста</strong>
+                <div class="field-grid">
+                  <label class="check-row"><input type="checkbox" data-disp="sanskrit" ${d.sanskrit ? "checked" : ""}/>Санскрит</label>
+                  <label class="check-row"><input type="checkbox" data-disp="italicSanskrit" ${d.italicSanskrit ? "checked" : ""}/>Курсив санскр.</label>
+                  <label class="check-row"><input type="checkbox" data-disp="translation" ${d.translation ? "checked" : ""}/>Перевод</label>
+                  <label class="check-row"><input type="checkbox" data-disp="italicTranslation" ${d.italicTranslation ? "checked" : ""}/>Курсив перев.</label>
+                  <label class="check-row"><input type="checkbox" data-disp="instruction" ${d.instruction ? "checked" : ""}/>Настройка</label>
+                  <label class="check-row"><input type="checkbox" data-disp="italicInstruction" ${d.italicInstruction ? "checked" : ""}/>Курсив настр.</label>
+                </div>
+              </div>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                Размер текста: <strong>${Math.round(d.scale * 100)}%</strong>
+                <input type="range" min="85" max="150" step="5" value="${Math.round(d.scale * 100)}" id="scaleSlider" />
+              </label>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                <strong>Раскладка погружения</strong>
+                <select class="lab-select" id="layoutSelect" style="background:var(--card);color:var(--ink);border-color:var(--line)">
+                  <option value="canon" ${state.layoutId === "canon" ? "selected" : ""}>Канон (Лучшие круги + Расаяна)</option>
+                  <option value="rasayana" ${state.layoutId === "rasayana" ? "selected" : ""}>Погружение (Бхакти-расаяна)</option>
+                  <option value="custom" ${state.layoutId === "custom" ? "selected" : ""}>Моя подборка (настраиваемая)</option>
+                </select>
+                <button class="btn-ghost" data-action="open-layouts">Наполнить круги своей подборкой</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;border-top:1px solid var(--line);padding-top:10px">
+                <strong>Артикуляционная гимнастика</strong>
+                <button class="btn-ghost" data-action="goto-warmup">Размять речь (таймер джапы встанет на паузу)</button>
+              </div>
+            </aside>
+          </div>
+        `;
+      }
+      if (state.overlay === "warmupSettings") {
+        const w = state.warmup;
+        return `
+          <div class="overlay-backdrop" data-action="close-overlay">
+            <aside class="overlay-panel" onclick="event.stopPropagation()">
+              <div class="overlay-header">
+                <h3>Настройки разминки</h3>
+                <button class="btn-ghost" data-action="close-overlay">Готово</button>
+              </div>
+              <label class="check-row">
+                <input type="checkbox" id="tutorToggle" ${w.tutor ? "checked" : ""} />
+                Режим «Диктор» (метроном и подсветка слогов)
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                Темп слогов: <strong>${w.bpm} BPM</strong>
+                <input type="range" min="36" max="120" step="4" value="${w.bpm}" id="warmupBpmSlider" />
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                Темп скороговорок: <strong>${w.textBpm} BPM</strong>
+                <input type="range" min="60" max="180" step="8" value="${w.textBpm}" id="warmupTextBpmSlider" />
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                Повторов (серий): <strong>${w.rounds}</strong>
+                <input type="range" min="1" max="5" step="1" value="${w.rounds}" id="warmupRoundsSlider" />
+              </label>
+            </aside>
+          </div>
+        `;
+      }
+      if (state.overlay === "layouts") {
+        return `
+          <div class="overlay-backdrop" data-action="close-overlay">
+            <aside class="overlay-panel" onclick="event.stopPropagation()">
+              <div class="overlay-header">
+                <h3>Наполнение кругов (принцип подборок)</h3>
+                <button class="btn-ghost" data-action="open-settings">← Назад</button>
+              </div>
+              <p class="muted" style="margin:0;font-size:12.5px">Как в блоках артикуляции: вы назначаете текст по ID на каждый круг или шаг погружения.</p>
+              ${state.customMap.map((assignedId, slotIdx) => `
+                <label style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px">
+                  <span>Круг ${slotIdx + 1} (шаблон)</span>
+                  <select class="lab-select" data-custom-slot="${slotIdx}" style="background:var(--card);color:var(--ink);border-color:var(--line);max-width:220px">
+                    ${TEXT_BANK.map((t) => `<option value="${t.id}" ${t.id === assignedId ? "selected" : ""}>${t.work} · ${t.title}</option>`).join("")}
+                  </select>
+                </label>
+              `).join("")}
+              <button class="btn-solid" data-action="apply-custom-layout">Применить «Мою подборку»</button>
+            </aside>
+          </div>
+        `;
+      }
+      if (state.overlay === "history") {
+        const avg = state.durations.length
+          ? Math.round(state.durations.reduce((a, b) => a + b, 0) / state.durations.length)
+          : 0;
+        return `
+          <div class="overlay-backdrop" data-action="close-overlay">
+            <aside class="overlay-panel" onclick="event.stopPropagation()">
+              <div class="overlay-header">
+                <h3>История кругов (${state.durations.length} из ${state.target})</h3>
+                <button class="btn-ghost" data-action="close-overlay">Закрыть</button>
+              </div>
+              <p style="margin:0;font-size:13.5px">Всего: <strong class="tabular">${formatTime(state.totalElapsedMs)}</strong> · Средний круг: <strong class="tabular">${formatTime(avg)}</strong></p>
+              <ol class="round-list tabular">
+                ${state.durations.map((d, i) => `<li>Круг ${i + 1}: <strong>${formatTime(d)}</strong></li>`).join("")}
+              </ol>
+            </aside>
+          </div>
+        `;
+      }
+      return "";
+    }
+
+    function renderCompletion() {
+      const total = state.durations.reduce((a, b) => a + b, 0);
+      const avg = Math.round(total / Math.max(1, state.durations.length));
+      return `
+        <div style="padding:20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px">
+          <h2 style="margin:0">Завершено: ${state.target} кругов</h2>
+          <p style="margin:0" class="tabular">Общее время: <strong>${formatTime(total)}</strong> · Средний круг: <strong>${formatTime(avg)}</strong></p>
+          <div class="reading-card" style="overflow:visible">
+            <span class="card-index">Молитва по окончании джапы</span>
+            <pre class="sanskrit-block">${TEXT_BANK[4].sanskrit}</pre>
+            <p class="translation-block">${TEXT_BANK[4].translation}</p>
+          </div>
+          <ol class="round-list tabular">
+            ${state.durations.map((d, i) => `<li>Круг ${i + 1}: ${formatTime(d)}</li>`).join("")}
+          </ol>
+          <button class="btn-solid" id="restartPracticeBtn" style="min-height:48px">Начать новую практику</button>
+        </div>
+      `;
+    }
+
+    function renderWatch(seq, item) {
+      const pct = Math.round(((state.round - 1) / state.target) * 100);
+      return `
+        <div class="watch-shell">
+          <button class="watch-hw-btn" id="watchHwBtn" title="Программируемая кнопка часов (Action Button): завершить круг">BTN</button>
+          <div class="watch-mode-pills">
+            <button class="watch-dot-btn" data-watch-mode="round" aria-pressed="${state.watchMode === "round"}">Круг</button>
+            <button class="watch-dot-btn" data-watch-mode="timer" aria-pressed="${state.watchMode === "timer"}">Таймер</button>
+            <button class="watch-dot-btn" data-watch-mode="text" aria-pressed="${state.watchMode === "text"}">Текст</button>
+          </div>
+
+          ${state.watchMode === "round" ? `
+            <div>
+              <div class="muted tabular" style="font-size:11.5px">${state.paused ? "⏸ Пауза" : `<span data-round-timer>${formatTime(state.roundElapsedMs)}</span> · <span data-total-timer>${formatTime(state.totalElapsedMs)}</span>`}</div>
+              <div class="watch-big-num tabular" style="margin-top:4px">${state.round} / ${state.target}</div>
+              <div class="muted" style="font-size:12px">круг (${pct}%)</div>
+            </div>
+            <button class="btn-solid watch-action-btn" id="watchNextHoldBtn" title="Удерживайте 0.8с для защиты от случайного нажатия">
+              <span class="hold-fill" id="watchHoldFill"></span>
+              <span>${state.round >= state.target ? "Завершить (удерж.)" : "Удерж. → След. круг"}</span>
+            </button>
+          ` : state.watchMode === "timer" ? `
+            <div>
+              <div class="muted" style="font-size:12px">Круг ${state.round} из ${state.target}</div>
+              <div class="watch-big-num tabular" data-round-timer>${formatTime(state.roundElapsedMs)}</div>
+              <div class="muted tabular" style="font-size:12px">Всего: <span data-total-timer>${formatTime(state.totalElapsedMs)}</span></div>
+              <div style="font-size:11.5px;margin-top:4px;color:var(--accent)">${state.paused ? "⏸ Пауза" : "▶ Идёт"}</div>
+            </div>
+            <button class="btn-solid watch-action-btn" data-action="toggle-pause">
+              ${state.paused ? "▶ Продолжить" : "⏸ Пауза"}
+            </button>
+          ` : `
+            <div class="watch-text-scroll">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <span class="card-index" style="font-size:10.5px">${state.textIndex + 1}/${seq.length}</span>
+                <div style="display:flex;gap:4px">
+                  <button class="watch-dot-btn" data-action="prev-text" ${state.textIndex <= 0 ? "disabled" : ""}>‹</button>
+                  <button class="watch-dot-btn" data-action="next-text" ${state.textIndex >= seq.length - 1 ? "disabled" : ""}>›</button>
+                </div>
+              </div>
+              <div style="font-style:italic;margin-bottom:4px">${item.sanskrit}</div>
+              <div>${item.translation}</div>
+              <div class="muted" style="font-size:11px;margin-top:4px">··· Полный текст (не обрывать)</div>
+            </div>
+            ${state.textLocked
+              ? `<button class="btn-ghost watch-action-btn" style="min-height:34px;font-size:11.5px" data-action="reset-text">↺ К кругу ${state.round}</button>`
+              : `<span class="muted" style="font-size:11px">Коронка: прокрутка</span>`
+            }
+          `}
+        </div>
+      `;
+    }
+
+    function renderPrep() {
+      const targets = [4, 8, 16, 24, 32, 40, 48, 56, 64];
+      const seq = getActiveSequence();
+      const firstText = seq[0] || TEXT_BANK[0];
+
+      if (state.form.startsWith("watch")) {
+        return `
+          <div class="watch-shell">
+            <div class="muted" style="font-size:11.5px">Подготовка</div>
+            <div>
+              <div class="watch-big-num tabular">${state.target}</div>
+              <div class="muted" style="font-size:12px">кругов</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;width:90%">
+              <button class="btn-solid watch-action-btn" style="width:100%" data-action="goto-japa">Начать джапу</button>
+              <button class="btn-ghost watch-action-btn" style="width:100%;min-height:34px;font-size:11.5px" data-action="goto-warmup">Разминка речи</button>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <header class="top-bar">
+          <strong>Помощник по джапе</strong>
+          <div style="display:flex;gap:6px">
+            <button class="btn-ghost" data-action="open-settings">⚙ Настройки</button>
+          </div>
+        </header>
+        <div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div class="prep-grid">
+            <section class="prep-card">
+              <h3>1. Подготовка артикуляции</h3>
+              <p class="muted" style="margin:0;font-size:13px">Разогреть речевой аппарат перед мантрой (гласные, губные П–Б–М, скороговорки).</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto">
+                <button class="btn-ghost" data-action="start-express-warmup">Экспресс-разминка (4 упр.)</button>
+                <button class="btn-ghost" data-action="start-twister-warmup">Скороговорка</button>
+              </div>
+            </section>
+            <section class="prep-card">
+              <h3>2. Цель и раскладка погружения</h3>
+              <div class="target-chips">
+                ${targets.map((n) => `<button class="chip" data-prep-target="${n}" aria-pressed="${state.target === n}">${n}</button>`).join("")}
+              </div>
+              <div class="muted" style="font-size:12.5px">Раскладка: <strong>${PRESET_LAYOUTS[state.layoutId].title}</strong></div>
+              <button class="btn-ghost" style="align-self:flex-start" data-action="open-layouts">Настроить тексты кругов</button>
+            </section>
+          </div>
+          <section class="prep-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="card-index">Настрой перед 1-м кругом · ${firstText.work}</span>
+              <span class="muted" style="font-size:12px">5 условий: место, время, осанка, молчание, смирение</span>
+            </div>
+            <p class="translation-block" style="margin:0">${firstText.instruction}</p>
+          </section>
+        </div>
+        <footer class="bottom-action-bar">
+          <button class="btn-solid primary-next-btn" data-action="start-japa-from-prep">Начать джапу (${state.target} кругов) →</button>
+        </footer>
+        ${renderOverlay(firstText, seq)}
+      `;
+    }
+
+    function renderWarmupStage(ex) {
+      const w = state.warmup;
+      let flatIdx = 0;
+      const wordHtml = ex.words.map((word) => {
+        const tokensHtml = word.map((tok) => {
+          const idx = flatIdx++;
+          const isActive = w.tutor && w.phase === "running" && idx === w.tokenIndex;
+          const isPreview = w.tutor && w.phase === "running" && idx === w.tokenIndex + 1 && ex.isText;
+          return `<span class="token ${isActive ? "active" : ""} ${isPreview ? "preview" : ""}">${tok}</span>`;
+        }).join("");
+        return `<span class="word-line">${tokensHtml}</span>`;
+      }).join("");
+
+      const statusText = !w.tutor
+        ? "Режим: Самостоятельно"
+        : w.phase === "countdown"
+          ? `Приготовьтесь: ${w.countdownBeat}`
+          : w.phase === "resting"
+            ? `Отдых перед серией ${w.round}…`
+            : w.phase === "paused"
+              ? "Пауза"
+              : w.phase === "completed"
+                ? "Упражнение завершено"
+                : w.phase === "idle"
+                  ? "Нажмите на сцену для старта"
+                  : `Серия ${w.round} из ${w.rounds}`;
+
+      const veil = w.tutor && (w.phase === "paused" || w.phase === "idle" || w.phase === "completed")
+        ? `
+          <div class="pause-veil">
+            ${w.phase === "completed"
+              ? `<strong>Упражнение выполнено</strong><button class="btn-solid" data-action="warmup-next-or-japa">${w.exIndex < ARTICULATION_EXERCISES.length - 1 ? "Следующее упражнение →" : "Перейти к джапе →"}</button>`
+              : `<button class="btn-solid" data-action="warmup-toggle">▶ ${w.phase === "paused" ? "Продолжить" : "Старт"}</button><span class="muted" style="font-size:12px">${statusText}</span>`
+            }
+          </div>
+        `
+        : "";
+
+      return `
+        <div class="stage-area" data-action="warmup-toggle" role="button" tabindex="0" aria-label="Сцена артикуляции: старт или пауза">
+          ${w.tutor && w.phase === "countdown" ? `<div class="countdown-badge tabular">${w.countdownBeat}</div>` : ""}
+          <div class="stage-tokens ${ex.isText ? "is-text" : ""}">${wordHtml}</div>
+          <p class="muted" style="margin:0;font-size:12.5px;text-align:center;max-width:46ch">${ex.note}</p>
+          ${veil}
+        </div>
+      `;
+    }
+
+    function renderWarmup() {
+      const w = state.warmup;
+      const ex = currentWarmupExercise();
+      const totalTokens = ex.words.reduce((sum, word) => sum + word.length, 0);
+      const bpm = ex.isText ? w.textBpm : w.bpm;
+      const isFav = w.favorites.includes(ex.id);
+      const phaseBadge = w.phase === "paused" ? `<span class="pause-pill">⏸ Пауза</span>` : "";
+
+      if (state.form.startsWith("watch")) {
+        const flat = ex.words.flat();
+        const tok = flat[w.tokenIndex] || flat[0];
+        const prevTok = flat[w.tokenIndex - 1] || "";
+        const nextTok = flat[w.tokenIndex + 1] || "";
+        return `
+          <div class="watch-shell">
+            <div class="watch-mode-pills">
+              <button class="watch-dot-btn" data-action="warmup-prev" ${w.exIndex <= 0 ? "disabled" : ""}>‹</button>
+              <span class="muted" style="font-size:11px;align-self:center">Упр ${w.exIndex + 1}/${ARTICULATION_EXERCISES.length}</span>
+              <button class="watch-dot-btn" data-action="warmup-next" ${w.exIndex >= ARTICULATION_EXERCISES.length - 1 ? "disabled" : ""}>›</button>
+            </div>
+            <div>
+              <div class="muted tabular" style="font-size:11px">Серия ${w.round}/${w.rounds} · ${bpm} BPM</div>
+              <div class="watch-token-focus">${w.phase === "countdown" ? w.countdownBeat : tok}</div>
+              <div class="watch-neighbors"><span>${prevTok}</span><span>·</span><span>${nextTok}</span></div>
+            </div>
+            <div style="display:flex;gap:6px;width:92%">
+              <button class="btn-solid watch-action-btn" style="flex:1;min-height:38px" data-action="warmup-toggle">
+                ${w.phase === "running" || w.phase === "countdown" ? "⏸ Пауза" : "▶ Старт"}
+              </button>
+              <button class="btn-ghost watch-action-btn" style="flex:1;min-height:38px;font-size:11.5px" data-action="goto-japa">К джапе →</button>
+            </div>
+          </div>
+        `;
+      }
+
+      const exSeriesBar = `
+        <nav class="series-pills" aria-label="Упражнения разминки">
+          ${ARTICULATION_EXERCISES.map((item, idx) => `<button data-warmup-select="${idx}" class="${idx === w.exIndex ? "current" : idx < w.exIndex ? "done" : ""}" title="${item.title}" aria-label="${item.title}"></button>`).join("")}
+        </nav>
+      `;
+      const roundSeriesBar = w.tutor ? `
+        <nav class="series-pills thin" aria-label="Повторы серии">
+          ${Array.from({ length: w.rounds }, (_, i) => `<span class="${i + 1 === w.round ? "current" : i + 1 < w.round ? "done" : ""}"></span>`).join("")}
+        </nav>
+      ` : "";
+      const tokenSeriesBar = w.tutor ? `
+        <nav class="series-pills thin" aria-label="Элементы упражнения">
+          ${Array.from({ length: totalTokens }, (_, i) => `<span class="${i === w.tokenIndex && w.phase === "running" ? "current" : i < w.tokenIndex && w.phase === "running" ? "done" : ""}"></span>`).join("")}
+        </nav>
+      ` : "";
+
+      if (state.form === "phone-landscape" || state.form === "stand") {
+        return `
+          <div class="landscape-split">
+            <section class="landscape-text-col" aria-label="Сцена артикуляции">
+              <div class="landscape-text-header" style="flex-direction:column;align-items:stretch;gap:6px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <button class="btn-ghost" style="min-height:28px;padding:2px 8px" data-action="warmup-prev" ${w.exIndex <= 0 ? "disabled" : ""}>‹</button>
+                    <span class="card-index">${ex.category} · ${ex.title}</span>
+                    <button class="btn-ghost" style="min-height:28px;padding:2px 8px" data-action="warmup-next" ${w.exIndex >= ARTICULATION_EXERCISES.length - 1 ? "disabled" : ""}>›</button>
+                  </div>
+                  <button class="btn-ghost" style="min-height:28px;padding:2px 9px" data-action="warmup-fav">${isFav ? "★" : "☆"}</button>
+                </div>
+                ${exSeriesBar}
+              </div>
+              ${renderWarmupStage(ex)}
+            </section>
+
+            <aside class="landscape-control-col" aria-label="Управление разминкой">
+              <div class="control-status-box">
+                <div class="round-big tabular">
+                  <span>Упр. ${w.exIndex + 1} <span class="muted" style="font-size:14px">из ${ARTICULATION_EXERCISES.length}</span></span>
+                  ${phaseBadge}
+                </div>
+                ${roundSeriesBar}
+                <div class="timer-row">
+                  <span class="muted">Режим</span>
+                  <button class="chip" style="min-height:28px;padding:2px 8px;font-size:12px" data-action="warmup-mode-toggle">${w.tutor ? "Диктор" : "Сам"}</button>
+                </div>
+                <div class="timer-row tabular">
+                  <span class="muted">Темп</span>
+                  <strong>${w.tutor ? `${bpm} BPM` : "Свободный"}</strong>
+                </div>
+                ${tokenSeriesBar}
+              </div>
+
+              <div class="icon-row">
+                <button class="icon-btn ${w.phase === "paused" ? "active-pause" : ""}" data-action="warmup-toggle" aria-label="Старт или пауза" title="Старт / Пауза">${w.phase === "running" || w.phase === "countdown" || w.phase === "resting" ? "⏸" : "▶"}</button>
+                <button class="icon-btn" data-action="warmup-reset" aria-label="Сбросить упражнение" title="Сброс">↺</button>
+                <button class="icon-btn" data-action="open-warmup-settings" aria-label="Настройки разминки" title="Настройки">⚙</button>
+              </div>
+
+              <button class="btn-solid landscape-next-btn" data-action="goto-japa">
+                К джапе (${state.target} кр.) →
+              </button>
+            </aside>
+          </div>
+          ${renderOverlay(TEXT_BANK[0], getActiveSequence())}
+        `;
+      }
+
+      const isPortrait = state.form === "phone-portrait";
+      return `
+        <header class="top-bar">
+          <button class="btn-ghost" data-action="goto-prep">← Подготовка</button>
+          <div class="top-bar-center">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13.5px">
+              <strong>Разминка · Упр. ${w.exIndex + 1} из ${ARTICULATION_EXERCISES.length}</strong>
+              ${phaseBadge}
+            </div>
+            <div style="width:min(300px,100%);display:flex;flex-direction:column;gap:4px">
+              ${exSeriesBar}
+              ${roundSeriesBar}
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="chip" data-action="warmup-mode-toggle">${w.tutor ? `Диктор · ${bpm}` : "Сам"}</button>
+            <button class="icon-btn" data-action="open-warmup-settings" aria-label="Настройки разминки">⚙</button>
+          </div>
+        </header>
+
+        <main class="${isPortrait ? "portrait-main" : "desktop-main"}">
+          ${!isPortrait ? `<button class="edge-nav-btn" data-action="warmup-prev" ${w.exIndex <= 0 ? "disabled" : ""} aria-label="Предыдущее упражнение">‹</button>` : ""}
+          <article class="reading-card" style="padding:14px 18px;flex:1">
+            <div class="card-meta-row">
+              <span class="card-index">${ex.category} · ${ex.title}</span>
+              <div style="display:flex;gap:6px;align-items:center">
+                ${isPortrait ? `<button class="btn-ghost" style="min-height:30px;padding:2px 9px" data-action="warmup-prev" ${w.exIndex <= 0 ? "disabled" : ""}>‹</button><button class="btn-ghost" style="min-height:30px;padding:2px 9px" data-action="warmup-next" ${w.exIndex >= ARTICULATION_EXERCISES.length - 1 ? "disabled" : ""}>›</button>` : ""}
+                <button class="btn-ghost" style="min-height:30px;padding:2px 10px" data-action="warmup-fav">${isFav ? "★ В избранном" : "☆ В избранное"}</button>
+                <button class="icon-btn" style="width:32px;height:32px;font-size:14px" data-action="warmup-reset" title="Сброс">↺</button>
+              </div>
+            </div>
+            ${tokenSeriesBar}
+            ${renderWarmupStage(ex)}
+          </article>
+          ${!isPortrait ? `<button class="edge-nav-btn" data-action="warmup-next" ${w.exIndex >= ARTICULATION_EXERCISES.length - 1 ? "disabled" : ""} aria-label="Следующее упражнение">›</button>` : ""}
+        </main>
+
+        <footer class="bottom-action-bar" style="gap:10px">
+          ${w.tutor ? `<button class="btn-ghost" style="min-height:50px;padding:0 18px" data-action="warmup-toggle">${w.phase === "running" || w.phase === "countdown" || w.phase === "resting" ? "⏸ Пауза" : "▶ Старт"}</button>` : ""}
+          <button class="btn-solid primary-next-btn" style="max-width:420px" data-action="goto-japa">Перейти к джапе (${state.target} кругов) →</button>
+        </footer>
+        ${renderOverlay(TEXT_BANK[0], getActiveSequence())}
+      `;
+    }
+
+    function render() {
+      const frame = document.getElementById("deviceFrame");
+      frame.className = `device-frame form-${state.form}`;
+      document.documentElement.setAttribute("data-theme", state.theme);
+      document.documentElement.style.setProperty("--reading-scale", String(state.display.scale));
+      document.querySelectorAll("[data-screen]").forEach((b) => {
+        b.setAttribute("aria-pressed", String(b.getAttribute("data-screen") === state.screen));
+      });
+
+      const root = document.getElementById("appRoot");
+      if (state.screen === "prep") {
+        root.innerHTML = renderPrep();
+        attachEvents();
+        return;
+      }
+      if (state.screen === "warmup") {
+        root.innerHTML = renderWarmup();
+        attachEvents();
+        return;
+      }
+
+      const seq = getActiveSequence();
+      const item = seq[state.textIndex] || TEXT_BANK[0];
+      const nextLabel = state.round < state.target
+        ? `Круг ${state.round} завершён → Следующий (${state.round + 1})`
+        : "Завершить чтение";
+
+      if (state.completed && !state.form.startsWith("watch")) {
+        root.innerHTML = renderCompletion();
+        attachEvents();
+        return;
+      }
+
+      if (state.form.startsWith("watch")) {
+        root.innerHTML = `
+          ${renderWatch(seq, item)}
+          ${state.undoSnapshot ? `
+            <div class="undo-toast" style="bottom:8px;padding:4px 10px;font-size:11px">
+              <span>Круг ${state.undoSnapshot.round} ✓</span>
+              <button data-action="undo-round">Отмена</button>
+            </div>
+          ` : ""}
+        `;
+        attachEvents();
+        return;
+      }
+
+      const banners = `
+        ${state.showRecoveryBanner ? `
+          <div class="banner">
+            <span>Найдена сохранённая сессия: <strong>круг ${state.round} из ${state.target}</strong> (на паузе).</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn-solid" data-action="dismiss-recovery">Продолжить</button>
+              <button class="btn-ghost" id="discardRecoveryBtn">Начать заново</button>
+            </div>
+          </div>
+        ` : ""}
+        ${state.showStorageError ? `
+          <div class="banner alert" role="alert">
+            <span>Не удалось сохранить статистику на устройстве. Сессия продолжается в памяти.</span>
+            <button class="btn-ghost" data-action="dismiss-storage">Повторить</button>
+          </div>
+        ` : ""}
+      `;
+
+      const lockChip = state.textLocked
+        ? `<button class="chip" data-action="reset-text" style="border-color:var(--accent);color:var(--accent)">↺ К тексту круга ${state.round}</button>`
+        : "";
+
+      if (state.form === "phone-landscape" || state.form === "stand") {
+        const pct = Math.round(((state.round - 1) / state.target) * 100);
+        root.innerHTML = `
+          ${banners}
+          <div class="landscape-split">
+            <section class="landscape-text-col" aria-label="Текст настройки">
+              <div class="landscape-text-header">
+                <div style="display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap">
+                  <button class="btn-ghost" style="min-height:30px;padding:2px 9px" data-action="prev-text" ${state.textIndex <= 0 ? "disabled" : ""} aria-label="Предыдущий текст">‹</button>
+                  <span class="card-index">Текст ${state.textIndex + 1}/${seq.length}</span>
+                  <button class="btn-ghost" style="min-height:30px;padding:2px 9px" data-action="next-text" ${state.textIndex >= seq.length - 1 ? "disabled" : ""} aria-label="Следующий текст">›</button>
+                  ${lockChip}
+                </div>
+                ${state.form !== "stand" ? `<button class="btn-ghost" style="min-height:30px;padding:2px 9px;font-size:12px" data-action="open-fulltext">Полный текст</button>` : ""}
+              </div>
+              <div class="landscape-text-scroll">
+                <h2 class="card-title">${item.title}</h2>
+                ${renderTextContent(item)}
+              </div>
+            </section>
+
+            <aside class="landscape-control-col ${state.paused ? "is-paused-dim" : ""}" aria-label="Управление кругами">
+              <div class="control-status-box">
+                <div class="round-big tabular">
+                  <span>Круг ${state.round} <span class="muted" style="font-size:14px">из ${state.target}</span></span>
+                  ${state.paused ? `<span class="pause-pill">⏸ Пауза</span>` : ""}
+                </div>
+                <div class="progress-track" style="width:100%"><div class="progress-fill" style="width:${pct}%"></div></div>
+                <div class="timer-row">
+                  <span class="muted">Круг</span>
+                  <strong class="tabular" data-round-timer>${formatTime(state.roundElapsedMs)}</strong>
+                </div>
+                <div class="timer-row">
+                  <span class="muted">Всего джапа</span>
+                  <span class="tabular" data-total-timer>${formatTime(state.totalElapsedMs)}</span>
+                </div>
+              </div>
+
+              <div class="icon-row">
+                <button class="icon-btn ${state.paused ? "active-pause" : ""}" data-action="toggle-pause" aria-label="${state.paused ? "Продолжить таймер" : "Пауза"}" title="${state.paused ? "Продолжить" : "Пауза"}">
+                  ${state.paused ? "▶" : "⏸"}
+                </button>
+                <button class="icon-btn" data-action="open-settings" aria-label="Настройки отображения" title="Настройки">⚙</button>
+                ${state.form !== "stand" ? `<button class="icon-btn" data-action="open-history" aria-label="История кругов" title="История">◷</button>` : ""}
+              </div>
+
+              <button class="btn-solid landscape-next-btn" data-action="next-round">
+                ${state.round < state.target ? `Следующий круг (${state.round + 1})` : "Завершить чтение"}
+              </button>
+            </aside>
+          </div>
+          ${renderOverlay(item, seq)}
+          ${state.undoSnapshot ? `
+            <div class="undo-toast">
+              <span>Круг ${state.undoSnapshot.round} записан (${formatTime(state.undoSnapshot.recordedMs)})</span>
+              <button data-action="undo-round">Отменить</button>
+            </div>
+          ` : ""}
+        `;
+        attachEvents();
+        return;
+      }
+
+      // Desktop & Phone Portrait
+      const isPortrait = state.form === "phone-portrait";
+      const pct = Math.round(((state.round - 1) / state.target) * 100);
+      root.innerHTML = `
+        ${banners}
+        <header class="top-bar">
+          <button class="btn-ghost" data-action="goto-prep" title="Вернуться к подготовке и разминке">←</button>
+          <div class="top-bar-center">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13.5px">
+              <strong class="tabular">Круг ${state.round} из ${state.target}</strong>
+              ${state.paused ? `<span class="pause-pill">⏸ Пауза</span>` : ""}
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="timers-inline tabular">
+              <span>Круг: <strong data-round-timer>${formatTime(state.roundElapsedMs)}</strong></span>
+              <span class="muted">Всего: <span data-total-timer>${formatTime(state.totalElapsedMs)}</span></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="icon-btn ${state.paused ? "active-pause" : ""}" data-action="toggle-pause" aria-label="${state.paused ? "Продолжить" : "Пауза"}" title="${state.paused ? "Продолжить" : "Пауза"}">${state.paused ? "▶" : "⏸"}</button>
+            <button class="icon-btn" data-action="open-settings" aria-label="Настройки" title="Настройки">⚙</button>
+            ${!isPortrait ? `<button class="icon-btn" data-action="open-history" aria-label="История" title="История">◷</button>` : ""}
+          </div>
+        </header>
+
+        ${isPortrait ? `
+          <main class="portrait-main">
+            <article class="reading-card">
+              <div class="card-meta-row">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button class="btn-ghost" style="min-height:32px;padding:2px 10px" data-action="prev-text" ${state.textIndex <= 0 ? "disabled" : ""}>‹</button>
+                  <span class="card-index">Текст ${state.textIndex + 1}/${seq.length}</span>
+                  <button class="btn-ghost" style="min-height:32px;padding:2px 10px" data-action="next-text" ${state.textIndex >= seq.length - 1 ? "disabled" : ""}>›</button>
+                </div>
+                <button class="btn-ghost" style="min-height:30px;font-size:12px" data-action="open-fulltext">Полный текст</button>
+              </div>
+              ${lockChip ? `<div>${lockChip}</div>` : ""}
+              <h2 class="card-title">${item.title}</h2>
+              ${renderTextContent(item)}
+            </article>
+          </main>
+        ` : `
+          <main class="desktop-main">
+            <button class="edge-nav-btn" data-action="prev-text" ${state.textIndex <= 0 ? "disabled" : ""} aria-label="Предыдущий текст" title="ArrowLeft">‹</button>
+            <article class="reading-card">
+              <div class="card-meta-row">
+                <span class="card-index">Текст ${state.textIndex + 1} из ${seq.length} · ${item.work} (${item.ref})</span>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  ${lockChip}
+                  <button class="btn-ghost" style="min-height:30px;font-size:12px" data-action="open-fulltext">Полный текст</button>
+                </div>
+              </div>
+              <h2 class="card-title">${item.title}</h2>
+              ${renderTextContent(item)}
+            </article>
+            <button class="edge-nav-btn" data-action="next-text" ${state.textIndex >= seq.length - 1 ? "disabled" : ""} aria-label="Следующий текст" title="ArrowRight">›</button>
+          </main>
+        `}
+
+        <footer class="bottom-action-bar">
+          <button class="btn-solid primary-next-btn" data-action="next-round">${nextLabel}</button>
+        </footer>
+
+        ${renderOverlay(item, seq)}
+        ${state.undoSnapshot ? `
+          <div class="undo-toast">
+            <span>Круг ${state.undoSnapshot.round} записан (${formatTime(state.undoSnapshot.recordedMs)})</span>
+            <button data-action="undo-round">Отменить</button>
+          </div>
+        ` : ""}
+      `;
+      attachEvents();
+    }
+
+    function attachEvents() {
+      document.querySelectorAll("[data-action]").forEach((el) => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const act = el.getAttribute("data-action");
+          if (act === "toggle-pause") togglePause();
+          else if (act === "prev-text") stepText(-1);
+          else if (act === "next-text") stepText(1);
+          else if (act === "reset-text") resetToRoundText();
+          else if (act === "next-round") triggerNextRound();
+          else if (act === "undo-round") undoNextRound();
+          else if (act === "open-fulltext") { state.overlay = "fulltext"; render(); }
+          else if (act === "open-settings") { state.overlay = "settings"; render(); }
+          else if (act === "open-history") { state.overlay = "history"; render(); }
+          else if (act === "open-layouts") { state.overlay = "layouts"; render(); }
+          else if (act === "open-warmup-settings") { state.overlay = "warmupSettings"; render(); }
+          else if (act === "close-overlay") { state.overlay = null; render(); }
+          else if (act === "dismiss-recovery") { state.showRecoveryBanner = false; render(); }
+          else if (act === "dismiss-storage") { state.showStorageError = false; render(); }
+          else if (act === "goto-prep") openScreen("prep");
+          else if (act === "goto-warmup") openScreen("warmup");
+          else if (act === "goto-japa") openScreen("japa");
+          else if (act === "start-japa-from-prep") { resetSession(); openScreen("japa"); }
+          else if (act === "start-express-warmup") { selectWarmupExercise(0); openScreen("warmup"); }
+          else if (act === "start-twister-warmup") { selectWarmupExercise(3); openScreen("warmup"); }
+          else if (act === "warmup-toggle") toggleWarmupPlay();
+          else if (act === "warmup-reset") resetWarmupExercise();
+          else if (act === "warmup-prev") selectWarmupExercise(state.warmup.exIndex - 1);
+          else if (act === "warmup-next") selectWarmupExercise(state.warmup.exIndex + 1);
+          else if (act === "warmup-next-or-japa") {
+            if (state.warmup.exIndex < ARTICULATION_EXERCISES.length - 1) selectWarmupExercise(state.warmup.exIndex + 1);
+            else openScreen("japa");
+          }
+          else if (act === "warmup-mode-toggle") {
+            state.warmup.tutor = !state.warmup.tutor;
+            if (!state.warmup.tutor) { stopWarmupTimer(); state.warmup.phase = "idle"; }
+            else { state.warmup.phase = "countdown"; state.warmup.countdownBeat = 2; scheduleWarmupTick(); }
+            render();
+          }
+          else if (act === "warmup-fav") {
+            const id = currentWarmupExercise().id;
+            const list = state.warmup.favorites;
+            state.warmup.favorites = list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+            render();
+          }
+          else if (act === "restore-text-layers") {
+            state.display.translation = true;
+            state.display.instruction = true;
+            render();
+          }
+          else if (act === "apply-custom-layout") {
+            state.layoutId = "custom";
+            state.textLocked = false;
+            state.textIndex = getAutoIndexForRound(state.round);
+            state.overlay = null;
+            render();
+          }
+        };
+      });
+
+      document.querySelectorAll("[data-prep-target]").forEach((btn) => {
+        btn.onclick = () => {
+          state.target = Number(btn.getAttribute("data-prep-target"));
+          state.round = Math.min(state.round, state.target);
+          state.textIndex = Math.min(state.textIndex, state.target - 1);
+          const sel = document.getElementById("targetSelect");
+          if (sel && [...sel.options].some((o) => Number(o.value) === state.target)) sel.value = String(state.target);
+          render();
+        };
+      });
+
+      document.querySelectorAll("[data-warmup-select]").forEach((btn) => {
+        btn.onclick = () => selectWarmupExercise(Number(btn.getAttribute("data-warmup-select")));
+      });
+
+      const tutorToggle = document.getElementById("tutorToggle");
+      if (tutorToggle) {
+        tutorToggle.onchange = () => {
+          state.warmup.tutor = tutorToggle.checked;
+          if (!state.warmup.tutor) { stopWarmupTimer(); state.warmup.phase = "idle"; }
+          else { state.warmup.phase = "countdown"; state.warmup.countdownBeat = 2; scheduleWarmupTick(); }
+          render();
+        };
+      }
+      const bpmSlider = document.getElementById("warmupBpmSlider");
+      if (bpmSlider) {
+        bpmSlider.oninput = () => {
+          state.warmup.bpm = Number(bpmSlider.value);
+          const lbl = bpmSlider.parentElement.querySelector("strong");
+          if (lbl) lbl.textContent = `${state.warmup.bpm} BPM`;
+        };
+      }
+      const textBpmSlider = document.getElementById("warmupTextBpmSlider");
+      if (textBpmSlider) {
+        textBpmSlider.oninput = () => {
+          state.warmup.textBpm = Number(textBpmSlider.value);
+          const lbl = textBpmSlider.parentElement.querySelector("strong");
+          if (lbl) lbl.textContent = `${state.warmup.textBpm} BPM`;
+        };
+      }
+      const roundsSlider = document.getElementById("warmupRoundsSlider");
+      if (roundsSlider) {
+        roundsSlider.oninput = () => {
+          state.warmup.rounds = Number(roundsSlider.value);
+          const lbl = roundsSlider.parentElement.querySelector("strong");
+          if (lbl) lbl.textContent = String(state.warmup.rounds);
+        };
+      }
+
+      document.querySelectorAll("[data-disp]").forEach((cb) => {
+        cb.onchange = () => {
+          const key = cb.getAttribute("data-disp");
+          state.display[key] = cb.checked;
+          render();
+        };
+      });
+
+      const scaleSlider = document.getElementById("scaleSlider");
+      if (scaleSlider) {
+        scaleSlider.oninput = () => {
+          state.display.scale = Number(scaleSlider.value) / 100;
+          document.documentElement.style.setProperty("--reading-scale", String(state.display.scale));
+          const label = scaleSlider.parentElement.querySelector("strong");
+          if (label) label.textContent = `${scaleSlider.value}%`;
+        };
+      }
+
+      const layoutSelect = document.getElementById("layoutSelect");
+      if (layoutSelect) {
+        layoutSelect.onchange = () => {
+          state.layoutId = layoutSelect.value;
+          if (!state.textLocked) state.textIndex = getAutoIndexForRound(state.round);
+          render();
+        };
+      }
+
+      document.querySelectorAll("[data-custom-slot]").forEach((sel) => {
+        sel.onchange = () => {
+          const slot = Number(sel.getAttribute("data-custom-slot"));
+          state.customMap[slot] = sel.value;
+        };
+      });
+
+      document.querySelectorAll("[data-watch-mode]").forEach((btn) => {
+        btn.onclick = () => {
+          state.watchMode = btn.getAttribute("data-watch-mode");
+          render();
+        };
+      });
+
+      const hwBtn = document.getElementById("watchHwBtn");
+      if (hwBtn) hwBtn.onclick = triggerNextRound;
+
+      // Hold-to-confirm on Watch Round screen
+      const holdBtn = document.getElementById("watchNextHoldBtn");
+      const holdFill = document.getElementById("watchHoldFill");
+      if (holdBtn && holdFill) {
+        let rafId = null;
+        let startAt = 0;
+        const holdDuration = 800;
+        const cancelHold = () => {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+          holdFill.style.width = "0%";
+        };
+        const stepHold = () => {
+          const elapsed = performance.now() - startAt;
+          const pct = Math.min(100, (elapsed / holdDuration) * 100);
+          holdFill.style.width = `${pct}%`;
+          if (elapsed >= holdDuration) {
+            cancelHold();
+            triggerNextRound();
+          } else {
+            rafId = requestAnimationFrame(stepHold);
+          }
+        };
+        holdBtn.onpointerdown = () => {
+          startAt = performance.now();
+          rafId = requestAnimationFrame(stepHold);
+        };
+        holdBtn.onpointerup = cancelHold;
+        holdBtn.onpointerleave = cancelHold;
+        holdBtn.onpointercancel = cancelHold;
+        holdBtn.onkeydown = (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerNextRound();
+          }
+        };
+      }
+
+      const restartBtn = document.getElementById("restartPracticeBtn");
+      if (restartBtn) {
+        restartBtn.onclick = resetSession;
+      }
+      const discardBtn = document.getElementById("discardRecoveryBtn");
+      if (discardBtn) {
+        discardBtn.onclick = resetSession;
+      }
+    }
+
+    function resetSession() {
+      state.round = 1;
+      state.durations = [];
+      state.roundElapsedMs = 0;
+      state.totalElapsedMs = 0;
+      state.paused = false;
+      state.completed = false;
+      state.showRecoveryBanner = false;
+      state.textLocked = false;
+      state.textIndex = 0;
+      state.overlay = null;
+      render();
+    }
+
+    // Lab Controls
+    document.querySelectorAll("[data-screen]").forEach((btn) => {
+      btn.onclick = () => openScreen(btn.getAttribute("data-screen"));
+    });
+
+    document.querySelectorAll("[data-form]").forEach((btn) => {
+      btn.onclick = () => {
+        document.querySelectorAll("[data-form]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        state.form = btn.getAttribute("data-form");
+        if (state.form === "stand") {
+          state.theme = "stand-dim";
+          state.display.scale = 1.25;
+          document.getElementById("themeSelect").value = "stand-dim";
+        } else if (state.theme === "stand-dim") {
+          state.theme = "dark";
+          state.display.scale = 1;
+          document.getElementById("themeSelect").value = "dark";
+        }
+        state.overlay = null;
+        render();
+      };
+    });
+
+    document.getElementById("themeSelect").onchange = (e) => {
+      state.theme = e.target.value;
+      render();
+    };
+
+    document.getElementById("targetSelect").onchange = (e) => {
+      state.target = Number(e.target.value);
+      state.round = Math.min(state.round, state.target);
+      state.textIndex = Math.min(state.textIndex, state.target - 1);
+      state.completed = false;
+      render();
+    };
+
+    document.getElementById("toggleNotchBtn").onclick = (e) => {
+      const stage = document.getElementById("labStage");
+      const active = stage.classList.toggle("show-notch");
+      e.target.setAttribute("aria-pressed", String(active));
+    };
+
+    document.getElementById("simRecoveryBtn").onclick = () => {
+      state.showRecoveryBanner = !state.showRecoveryBanner;
+      state.paused = state.showRecoveryBanner;
+      render();
+    };
+
+    document.getElementById("simStorageErrBtn").onclick = () => {
+      state.showStorageError = !state.showStorageError;
+      render();
+    };
+
+    document.getElementById("resetSessionBtn").onclick = resetSession;
+
+    // Keyboard shortcuts
+    window.addEventListener("keydown", (e) => {
+      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(document.activeElement?.tagName)) return;
+      if (e.key === "Escape" && state.overlay) { state.overlay = null; render(); return; }
+      if (state.screen === "warmup") {
+        if (e.key === "ArrowLeft") { e.preventDefault(); selectWarmupExercise(state.warmup.exIndex - 1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); selectWarmupExercise(state.warmup.exIndex + 1); }
+        else if (e.key === " ") { e.preventDefault(); toggleWarmupPlay(); }
+        return;
+      }
+      if (state.screen === "japa") {
+        if (e.key === "ArrowLeft") { e.preventDefault(); stepText(-1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); stepText(1); }
+        else if (e.key === "p" || e.key === "P" || e.key === "з" || e.key === "З") { togglePause(); }
+        else if (e.key === "r" || e.key === "R" || e.key === "к" || e.key === "К") { resetToRoundText(); }
+        else if (e.key === " ") { e.preventDefault(); triggerNextRound(); }
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

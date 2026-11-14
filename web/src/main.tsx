@@ -3,8 +3,14 @@ import "@fontsource/noto-sans/cyrillic-500.css";
 import "@fontsource/noto-sans/latin-500.css";
 import "@fontsource/noto-sans/cyrillic-700.css";
 import "@fontsource/noto-sans/latin-700.css";
-import "@fontsource/noto-serif/cyrillic-600.css";
-import "@fontsource/noto-serif/latin-600.css";
+import "@fontsource/noto-sans/latin-ext-500.css";
+import "@fontsource/noto-sans/latin-ext-700.css";
+import "@fontsource/noto-sans/cyrillic-ext-500.css";
+import "@fontsource/noto-sans/cyrillic-ext-700.css";
+import "@fontsource/noto-sans/cyrillic-ext-500-italic.css";
+import "@fontsource/noto-sans/cyrillic-500-italic.css";
+import "@fontsource/noto-sans/latin-500-italic.css";
+import "@fontsource/noto-sans/latin-ext-500-italic.css";
 import { App } from "./app";
 import "./styles.css";
 

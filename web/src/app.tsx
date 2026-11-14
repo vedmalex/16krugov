@@ -28,6 +28,8 @@ import { displayRows } from "./syllables";
 import { clearSessions, listSessions, saveSession, type SessionRecord } from "./store";
 import { loadPrefs, savePrefs, type Prefs } from "./prefs";
 import { loadCollections, saveCollections, type Collections, type CustomBlock } from "./collections";
+import { ShlokaBankPage, loadActiveTuneIn, saveActiveTuneIn, type ActiveTuneIn } from "./shlokas";
+import luchshieKrugiJson from "../data/luchshie_krugi.json";
 
 function isTextExercise(exercise: { id: string; category: string }): boolean {
   return exercise.id.endsWith("-phrase") || exercise.category === "tongue_twisters";
@@ -67,7 +69,9 @@ type Route =
   | { name: "list"; category: Category }
   | { name: "train"; id: string; queue?: string; at?: number }
   | { name: "history" }
-  | { name: "collections" };
+  | { name: "collections" }
+  | { name: "shlokas" }
+  | { name: "japa"; target: number };
 
 function readRoute(): Route {
   const hash = location.hash.replace(/^#/, "") || "/";
@@ -82,9 +86,13 @@ function readRoute(): Route {
       at: params.get("at") ? Number(params.get("at")) : undefined,
     };
   }
+  if (bits[0] === "japa") {
+    return { name: "japa", target: Number(bits[1]) || 16 };
+  }
   if (bits[0] === "list" && bits[1]) return { name: "list", category: bits[1] as Category };
   if (bits[0] === "history") return { name: "history" };
   if (bits[0] === "collections") return { name: "collections" };
+  if (bits[0] === "shlokas") return { name: "shlokas" };
   return { name: "home" };
 }
 
@@ -101,6 +109,7 @@ const lists: { category: Category; title: string }[] = [
 
 function Icon({ name }: { name: string }) {
   const paths: Record<string, string> = {
+    book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z",
     vowels: "M4 19 10 5l6 14M6.5 14h7M18 8h2m-1-1v2",
     consonants: "M5 5h7a4 4 0 0 1 0 8H5zm0 8h8a3 3 0 0 1 0 6H5z",
     tongue_twisters: "M4 5h16v11H9l-5 4zM8 9h8M8 12h5",
@@ -167,8 +176,8 @@ export function App() {
   return (
     <div class="shell">
       <header class="top">
-        {route.name !== "home" && <button class="ghost icon-button" type="button" onClick={() => menuRef.current?.showModal()} aria-label="Открыть меню" aria-haspopup="dialog" aria-controls="main-menu"><Icon name="menu" /></button>}
-        <a class="brand" href="#/">Артикуляция</a>
+        <button class="ghost icon-button" type="button" onClick={() => menuRef.current?.showModal()} aria-label="Открыть меню" aria-haspopup="dialog" aria-controls="main-menu"><Icon name="menu" /></button>
+        <a class="brand" href="#/">Помощник по джапе</a>
         {route.name === "train" && tutor && <label class="header-tempo"><span>Темп {textTempo ? "текста" : "упражнений"}</span><select value={bpm} onChange={(event) => {
           const value = Number((event.currentTarget as HTMLSelectElement).value);
           setBpm(value); savePrefs(textTempo ? { textBpm: value } : { bpm: value });
@@ -197,18 +206,21 @@ export function App() {
             menuRef.current?.close();
           }
         }}>
-          <a href="#/">Главная</a>
-          {lists.map((item) => <a href={`#/list/${item.category}`}><Icon name={item.category} />{item.title}</a>)}
-          <a href="#/history"><Icon name="history" />История</a>
-          <a href="#/collections">★ Избранное и мои блоки</a>
-          <span class="menu-heading">Программы</span>
+          <a href="#/" aria-current={route.name === "home" ? "page" : undefined}>Главная</a>
+          <a href="#/japa/16" aria-current={route.name === "japa" ? "page" : undefined}>Джапа · 16 кругов</a>
+          <a href="#/shlokas" aria-current={route.name === "shlokas" ? "page" : undefined}><Icon name="book" />Банк шлок и молитв</a>
+          <span class="menu-heading">Подготовка артикуляции</span>
+          {lists.map((item) => <a href={`#/list/${item.category}`} aria-current={route.name === "list" && route.category === item.category ? "page" : undefined}><Icon name={item.category} />{item.title}</a>)}
+          <a href="#/history" aria-current={route.name === "history" ? "page" : undefined}><Icon name="history" />История</a>
+          <a href="#/collections" aria-current={route.name === "collections" ? "page" : undefined}>★ Избранное и мои блоки</a>
+          <span class="menu-heading">Программы артикуляции</span>
           {programs.map((program) => {
             const first = programPlaylist(program)[0];
             return first ? <a href={`#/train/${first.exercise.id}?queue=${program.id}&at=0`} onClick={(event) => { event.preventDefault(); beginProgram(program); }}>{program.title}</a> : null;
           })}
         </nav>
       </dialog>
-      <details class="settings">
+      {route.name !== "japa" && <details class="settings">
         <summary>Настройки</summary>
         <div class="settings-content">
           <label class="field">Режим
@@ -271,11 +283,12 @@ export function App() {
             <select value={randomTwister ? "on" : "off"} onChange={(event) => { const value = event.currentTarget.value === "on"; setRandomTwister(value); savePrefs({ randomTwister: value }); }}><option value="off">Выключена</option><option value="on">Включена</option></select>
           </label>
         </div>
-      </details>
+      </details>}
       </div>
       {storageError && <p class="notice" role="alert">{storageError}</p>}
       {route.name === "home" && <Home prefs={prefs} />}
-      {location.hash.startsWith("#/japa/") && <JapaPage target={Number(location.hash.split("/")[2]) || 16} />}
+      {route.name === "japa" && <JapaPage target={route.target} />}
+      {route.name === "shlokas" && <ShlokaBankPage />}
       {route.name === "list" && <Catalog category={route.category} favorites={collections.favorites} onFavorite={toggleFavorite} prefs={prefs} />}
       {route.name === "collections" && <CollectionsPage collections={collections} onChange={updateCollections} onFavorite={toggleFavorite} prefs={prefs} />}
       {route.name === "train" && (
@@ -289,11 +302,20 @@ export function App() {
   );
 }
 
+function formatRounds(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 19) return `${n} кругов`;
+  if (mod10 === 1) return `${n} круг`;
+  if (mod10 >= 2 && mod10 <= 4) return `${n} круга`;
+  return `${n} кругов`;
+}
+
 function Home({ prefs }: { prefs: Prefs }) {
   const targets = [4, 8, 16, 24, 32, 40, 48, 56, 64];
   return (
-    <main>
-      <h1>Помощник для внимательной джапы</h1>
+    <main class="home-page">
+      <h1>Помощник по джапе</h1>
       <p class="lede">
         Подготовьте артикуляцию, выберите настрой на повторение и погрузите ум в святое имя.
       </p>
@@ -302,16 +324,25 @@ function Home({ prefs }: { prefs: Prefs }) {
         <nav class="nav"><a class="chip" href="#/list/vowels">Гласные</a><a class="chip" href="#/list/consonants">Согласные</a><a class="chip" href="#/list/tongue_twisters">Скороговорки</a></nav>
       </section>
       <section class="japa-card"><h2>2. Повторение мантры</h2><p>Выберите цель чтения и настрой на круг.</p>
-        <div class="target-grid">{targets.map((n) => <a class="chip" href={`#/japa/${n}`}>{n} {n === 1 ? "круг" : "кругов"}</a>)}</div>
+        <div class="target-grid">{targets.map((n) => <a class="chip" href={`#/japa/${n}`}>{formatRounds(n)}</a>)}</div>
         <a class="solid japa-start" href="#/japa/16">Настроиться и начать</a>
       </section>
-      <details class="japa-card"><summary>О приложении</summary><p>Веб-прототип. Архитектура контента подготовлена для будущих версий iOS и Android.</p></details>
+      <section class="japa-card">
+        <h2>Банк шлок и молитв</h2>
+        <p>19 произведений, 206 шлок: Шри Дамодараштака, Утренняя служба, Шри Бхакти-расаяна, 16 кругов. Доступны шлоки, связный подстрочник и пословный разбор.</p>
+        <div class="target-grid">
+          <a class="chip" href="#/shlokas?work=damodarastakam">Дамодараштака</a>
+          <a class="chip" href="#/shlokas?work=gurvastakam">Гурваштака</a>
+          <a class="chip" href="#/shlokas?work=kevalastakam">Кевалаштака</a>
+          <a class="chip" href="#/shlokas?work=bhakti-rasayana">Бхакти-расаяна</a>
+          <a class="chip" href="#/shlokas?work=luchshie-krugi">16 кругов</a>
+        </div>
+        <a class="solid japa-start" href="#/shlokas">Открыть банк шлок</a>
+      </section>
+      <details class="japa-card"><summary>О приложении</summary><p>Помощник для подготовки и внимательного повторения мантры.</p></details>
       <h2>Программы артикуляции</h2>
       <p class="meta">Темп: упражнения {prefs.bpm} BPM · тексты {prefs.textBpm} BPM · {prefs.rounds} сер. · порция {Math.round(prefs.portion * 100)}%</p>
       <nav class="nav" aria-label="Разделы">
-        {lists.map((item) => (
-          <a class="chip" href={`#/list/${item.category}`}><Icon name={item.category} />{item.title}</a>
-        ))}
         <a class="chip" href="#/history"><Icon name="history" />История</a>
         <a class="chip" href="#/collections">★ Избранное и мои блоки</a>
       </nav>
@@ -333,19 +364,153 @@ function Home({ prefs }: { prefs: Prefs }) {
   );
 }
 
+type JapaSession = { id: string; target: number; startedAt: number; roundStartedAt: number | null; elapsedMs: number; durations: number[]; completed: boolean };
+const JAPA_ACTIVE = "japa-active-session";
+const JAPA_HISTORY = "japa-session-history";
+function loadJapa(): JapaSession | null {
+  try { return JSON.parse(localStorage.getItem(JAPA_ACTIVE) || "null"); } catch { return null; }
+}
+function loadJapaHistory(): JapaSession[] {
+  try { const rows = JSON.parse(localStorage.getItem(JAPA_HISTORY) || "[]"); return Array.isArray(rows) ? rows : []; } catch { return []; }
+}
+function japaTime(ms: number): string {
+  const seconds = Math.floor(Math.max(0, ms) / 1000);
+  return `${Math.floor(seconds / 3600).toString().padStart(2, "0")}:${Math.floor(seconds / 60 % 60).toString().padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+}
 function JapaPage({ target }: { target: number }) {
-  const [round, setRound] = useState(1);
-  const [textIndex, setTextIndex] = useState(1);
-  const [started, setStarted] = useState(false);
-  const maxText = 16;
-  return <main class="japa-page"><a href="#/">← Главная</a><h1>Джапа</h1>
-    {!started ? <><p class="lede">Цель: {target} кругов. Перед началом прочитайте настрой.</p><article class="japa-card"><h2>Настрой на повторение</h2><p>Читайте внимательно, слыша каждое произнесение святого имени. Возвращайте ум к звуку мантры с терпением и молитвенным настроем.</p></article><button class="solid" onClick={() => setStarted(true)}>Начать джапу</button></> : <>
-    <p class="meta">Цель {target} кругов · круг {round} из {target}</p><progress value={round-1} max={target}/>
-    <article class="japa-card"><h2>Настрой · текст {textIndex} из {maxText}</h2><p>Сосредоточьтесь на звучании святого имени. Повторяйте мантру ясно и внимательно, погружая ум в её звук.</p>
-      <div class="japa-controls"><button class="ghost" onClick={() => setTextIndex(Math.max(1,textIndex-1))}>← Предыдущий текст</button><button class="ghost" onClick={() => setTextIndex(Math.min(maxText,textIndex+1))}>Следующий текст →</button></div></article>
-    <button class="solid next-round" onClick={() => { if(round < target) setRound(round+1); else setStarted(false); }}>{round < target ? "Следующий круг" : "Завершить чтение"}</button>
-    </>}
-  </main>;
+  const [session, setSession] = useState<JapaSession | null>(() => { const saved = loadJapa(); return saved?.target === target ? saved : null; });
+  const [now, setNow] = useState(Date.now());
+  const [storageError, setStorageError] = useState("");
+  const [textRound, setTextRound] = useState<number | null>(null);
+  const [customTuneIn, setCustomTuneIn] = useState<ActiveTuneIn | null>(loadActiveTuneIn);
+  const [display, setDisplay] = useState(() => {
+    try { const saved = JSON.parse(localStorage.getItem("japa-display") || "{}"); return { sanskrit: saved.sanskrit !== false, translation: saved.translation !== false, instruction: saved.instruction !== false, italicSanskrit: saved.italicSanskrit !== false, italicTranslation: saved.italicTranslation === true, italicInstruction: saved.italicInstruction !== false }; }
+    catch { return { sanskrit: true, translation: true, instruction: true, italicSanskrit: true, italicTranslation: false, italicInstruction: true }; }
+  });
+  function toggleDisplay(key: keyof typeof display, checked: boolean) {
+    const next = { ...display, [key]: checked };
+    setDisplay(next);
+    try { localStorage.setItem("japa-display", JSON.stringify(next)); } catch { setStorageError("Не удалось сохранить настройки отображения."); }
+  }
+
+  function updateSession(next: JapaSession) {
+    setSession(next);
+    try {
+      localStorage.setItem(JAPA_ACTIVE, JSON.stringify(next));
+      const history = loadJapaHistory().filter((item) => item.id !== next.id);
+      localStorage.setItem(JAPA_HISTORY, JSON.stringify([next, ...history]));
+      setStorageError("");
+    } catch { setStorageError("Не удалось сохранить статистику в браузере."); }
+  }
+  const round = (session?.durations.length ?? 0) + 1;
+  const started = session !== null;
+  const completed = session?.completed ?? false;
+  const elapsed = session ? session.elapsedMs + (session.roundStartedAt === null ? 0 : Math.max(0, now - session.roundStartedAt)) : 0;
+  useEffect(() => {
+    if (!session || session.roundStartedAt === null || session.completed) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [session?.roundStartedAt, session?.completed]);
+
+  useEffect(() => {
+    setCustomTuneIn(loadActiveTuneIn());
+    const saved = loadJapa();
+    setSession(saved?.target === target ? saved : null);
+    setTextRound(null);
+  }, [target]);
+
+  const roundsData = (luchshieKrugiJson as any).rounds || [];
+  const shownRound = textRound ?? Math.min(round, roundsData.length);
+  const currentRoundData = roundsData[Math.min(shownRound - 1, roundsData.length - 1)];
+
+  return (
+    <main class="japa-page">
+      <a href="#/">← Главная</a>
+      <h1>Джапа</h1>
+      <details class="japa-display-settings"><summary>Настройки отображения</summary><fieldset><legend>Что показывать</legend>{([ ["sanskrit", "Санскрит"], ["translation", "Перевод"], ["instruction", "Настройка"] ] as const).map(([key, label]) => <label key={key}><input type="checkbox" checked={display[key]} onChange={(event) => toggleDisplay(key, event.currentTarget.checked)} />{label}</label>)}</fieldset><fieldset><legend>Курсив</legend>{([ ["italicSanskrit", "Санскрит"], ["italicTranslation", "Перевод"], ["italicInstruction", "Настройка"] ] as const).map(([key, label]) => <label key={key}><input type="checkbox" checked={display[key]} onChange={(event) => toggleDisplay(key, event.currentTarget.checked)} />{label}</label>)}</fieldset></details>
+      {storageError && <p class="notice" role="alert">{storageError}</p>}
+      {completed ? (
+        <article class="japa-card completion-card">
+          <h2>🎉 Вы завершили {formatRounds(target)}!</h2>
+          {session && <div><p>Общее время кругов: {japaTime(session.durations.reduce((sum, duration) => sum + duration, 0))}</p><ol>{session.durations.map((duration, index) => <li key={index}>Круг {index + 1}: {japaTime(duration)}</li>)}</ol></div>}
+          <p class="lede">Молитвы по окончании джапы (из книги «16 кругов — Лучшие круги джапы»):</p>
+          <div class="completion-prayers-list">
+            {(luchshieKrugiJson as any).completion_prayers?.prayers?.map((p: any, idx: number) => (
+              <div key={idx} class="completion-prayer-item" style={{ marginTop: "14px", padding: "12px 14px", background: "var(--paper)", borderRadius: "8px", border: "1px solid var(--line)" }}>
+                <h3 style={{ margin: "0 0 6px 0", color: "var(--accent)", fontSize: "1.05rem" }}>{p.title}</h3>
+                {display.sanskrit && p.sanskrit && <pre class="sanskrit-text" style={{ whiteSpace: "pre-wrap", marginBottom: "8px", fontStyle: display.italicSanskrit ? "italic" : "normal", fontSize: "0.95rem" }}>{p.sanskrit}</pre>}
+                {display.translation && <p class="translation-text" style={{ fontSize: "0.95rem", fontStyle: display.italicTranslation ? "italic" : "normal" }}>{p.translation}</p>}
+                {display.instruction && p.instruction && <p class="meta" style={{ fontStyle: display.italicInstruction ? "italic" : "normal", marginTop: "6px" }}>{p.instruction}</p>}
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: "18px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <a class="solid" href="#/">← На главную</a>
+            <button class="ghost" onClick={() => { setSession(null); localStorage.removeItem(JAPA_ACTIVE); }}>Повторить джапу</button>
+            <a class="ghost" href="#/shlokas">Банк шлок</a>
+          </div>
+        </article>
+      ) : !started ? (
+        <>
+          <p class="lede">Цель: {formatRounds(target)}. Перед началом прочитайте настрой.</p>
+          <article class="japa-card">
+            <h2>{customTuneIn ? `Настрой: ${customTuneIn.workTitle} — ${customTuneIn.title}` : "Настрой на повторение"}</h2>
+            {customTuneIn ? (
+              <div class="custom-tune-in-box">
+                {customTuneIn.canonicalRef && <p class="ref-badge" style={{ display: "inline-block", marginBottom: "8px" }}>{customTuneIn.canonicalRef}</p>}
+                {display.sanskrit && customTuneIn.sanskrit && <pre class="sanskrit-text" style={{ whiteSpace: "pre-wrap", marginBottom: "8px", fontStyle: display.italicSanskrit ? "italic" : "normal" }}>{customTuneIn.sanskrit}</pre>}
+                {display.translation && <p class="translation-text" style={{ fontWeight: 500, fontStyle: display.italicTranslation ? "italic" : "normal" }}>{customTuneIn.translation}</p>}
+                {display.instruction && customTuneIn.instruction && <p class="meta" style={{ marginTop: "8px", fontStyle: display.italicInstruction ? "italic" : "normal" }}>{customTuneIn.instruction}</p>}
+                <div class="japa-controls" style={{ marginTop: "12px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <a class="ghost" href="#/shlokas">Сменить шлоку</a>
+                  <button class="ghost" onClick={() => { saveActiveTuneIn(null); setCustomTuneIn(null); }}>Сбросить настрой</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {display.instruction && <p style={{ fontStyle: display.italicInstruction ? "italic" : "normal" }}>Читайте внимательно, слыша каждое произнесение святого имени. Возвращайте ум к звуку мантры с терпением и молитвенным настроем.</p>}
+                <div class="japa-controls" style={{ marginTop: "12px" }}>
+                  <a class="ghost" href="#/shlokas">★ Выбрать настрой из банка шлок</a>
+                </div>
+              </>
+            )}
+          </article>
+          <button class="solid" onClick={() => { const time = Date.now(); setNow(time); updateSession({ id: crypto.randomUUID(), target, startedAt: time, roundStartedAt: time, elapsedMs: 0, durations: [], completed: false }); }}>Начать джапу</button>
+        </>
+      ) : (
+        <>
+          <p class="meta">Цель {formatRounds(target)} · круг {round} из {target}</p>
+          <progress value={round - 1} max={target} />
+          <p>Время круга: <strong aria-label="Время текущего круга">{japaTime(elapsed)}</strong></p>
+          <button class="ghost" onClick={() => { if (!session) return; const time = Date.now(); setNow(time); updateSession(session.roundStartedAt === null ? { ...session, roundStartedAt: time } : { ...session, elapsedMs: session.elapsedMs + Math.max(0, time - session.roundStartedAt), roundStartedAt: null }); }}>{session?.roundStartedAt === null ? "Продолжить таймер" : "Пауза"}</button>
+          <article class="japa-card japa-reading">
+            <button class="japa-edge japa-edge-prev" type="button" aria-label="Предыдущий настрой" disabled={shownRound <= 1} onClick={() => setTextRound(shownRound - 1)}>‹</button>
+            <button class="japa-edge japa-edge-next" type="button" aria-label="Следующий настрой" disabled={shownRound >= roundsData.length} onClick={() => setTextRound(shownRound + 1)}>›</button>
+            <p class="japa-reading-index">Настрой {shownRound} / {roundsData.length}</p>
+            <h2>{currentRoundData ? `Настрой ${shownRound}: ${currentRoundData.theme}` : `Настрой ${shownRound}`}</h2>
+            {currentRoundData && (
+              <>
+                {display.sanskrit && currentRoundData.shloka?.sanskrit && (
+                  <pre class="sanskrit-text" style={{ whiteSpace: "pre-wrap", marginBottom: "8px", fontStyle: display.italicSanskrit ? "italic" : "normal" }}>{currentRoundData.shloka.sanskrit}</pre>
+                )}
+                {display.translation && <p class="translation-text" style={{ fontStyle: display.italicTranslation ? "italic" : "normal" }}>{currentRoundData.shloka?.translation}</p>}
+                {display.instruction && currentRoundData.instruction && (
+                  <p class="meta" style={{ fontStyle: display.italicInstruction ? "italic" : "normal", marginTop: "10px", lineHeight: "1.5" }}>{currentRoundData.instruction}</p>
+                )}
+              </>
+            )}
+            <div class="japa-controls" style={{ marginTop: "14px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <a class="ghost" href={`#/shlokas?work=luchshie-krugi&verse=${shownRound}`}>Подробнее о настрое</a>
+            </div>
+          </article>
+          <button class="solid next-round" onClick={() => { if (!session) return; const time = Date.now(); const duration = session.elapsedMs + (session.roundStartedAt === null ? 0 : Math.max(0, time - session.roundStartedAt)); setNow(time); setTextRound(null); updateSession({ ...session, durations: [...session.durations, duration], elapsedMs: 0, roundStartedAt: round < target && session.roundStartedAt !== null ? time : null, completed: round >= target }); }}>
+            {round < target ? `Круг ${round} завершён → Следующий (${round + 1})` : "Завершить чтение"}
+          </button>
+          {session && session.durations.length > 0 && <section class="japa-card"><h2>Завершённые круги</h2><ol>{session.durations.map((duration, index) => <li key={index}>Круг {index + 1}: {japaTime(duration)}</li>)}</ol></section>}
+        </>
+      )}
+    </main>
+  );
 }
 
 function Catalog({ category, favorites, onFavorite, prefs }: { category: Category; favorites: string[]; onFavorite: (id: string) => void; prefs: Prefs }) {
@@ -951,6 +1116,7 @@ function label(phase: PlayerState["phase"]): string {
 
 function History() {
   const [rows, setRows] = useState<SessionRecord[] | null>(null);
+  const [japaRows] = useState<JapaSession[]>(loadJapaHistory);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -979,6 +1145,10 @@ function History() {
   return (
     <main>
       <h1>История</h1>
+      <h2>Джапа</h2>
+      {japaRows.length === 0 && <p>Сессий джапы пока нет.</p>}
+      {japaRows.map((session) => <details class="japa-card" key={session.id}><summary>{new Date(session.startedAt).toLocaleString()} · {session.durations.length} из {session.target} кругов · {session.completed ? "завершена" : "не завершена"}</summary><p>Время завершённых кругов: {japaTime(session.durations.reduce((sum, duration) => sum + duration, 0))}</p><ol>{session.durations.map((duration, index) => <li key={index}>Круг {index + 1}: {japaTime(duration)}</li>)}</ol></details>)}
+      <h2>Тренировки артикуляции</h2>
       {error && <p class="notice">{error}</p>}
       {rows && rows.length === 0 && <p>Пока пусто.</p>}
       <ul class="history">

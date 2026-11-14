@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Банк Шлок — Мобильные издания</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #faf8f5;
+  --text: #2d2a26;
+  --header-bg: #f3ece2;
+  --card-bg: #ffffff;
+  --card-border: #e6ded4;
+  --accent: #b45309;
+  --accent-light: #fef3c7;
+  --verse-bg: #fffbf2;
+  --verse-border: #fcd34d;
+  --muted: #6b7280;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --text: #f4f4f5;
+    --header-bg: #27272a;
+    --card-bg: #202023;
+    --card-border: #3f3f46;
+    --accent: #f59e0b;
+    --accent-light: #451a03;
+    --verse-bg: #1f1d17;
+    --verse-border: #b45309;
+    --muted: #a1a1aa;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', -apple-system, sans-serif;
+  line-height: 1.6;
+  padding: 20px 16px 40px;
+  max-width: 840px;
+  margin: 0 auto;
+}
+header {
+  text-align: center;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 24px;
+}
+.badge {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+h1 { font-size: 1.8rem; margin-bottom: 8px; color: var(--accent); }
+p.lede { color: var(--muted); font-size: 1rem; }
+.nav-back {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin: 20px 0;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card h2 { font-size: 1.25rem; margin-bottom: 6px; color: var(--accent); }
+.card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+.formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.formats a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--verse-bg);
+  border: 1px solid var(--verse-border);
+  color: var(--text);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.formats a:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.spa-banner {
+  background: var(--header-bg);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 30px;
+  text-align: center;
+}
+.spa-banner h3 { color: var(--accent); margin-bottom: 6px; font-size: 1.15rem; }
+.spa-banner p { font-size: 0.92rem; color: var(--muted); margin-bottom: 12px; }
+.spa-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+</style>
+</head>
+<body>
+<header>
+  <span class="badge">16 КРУГОВ · БАНК ШЛОК</span>
+  <h1>Священные молитвы и шлоки</h1>
+  <p class="lede">Канонические тексты, подстрочные переводы и пословные разборы для внимательной джапы и киртана</p>
+  <a class="nav-back" href="../../#/shlokas">← Перейти в интерактивный тренажёр шлок</a>
+</header>
+
+<main class="grid">
+  <article class="card">
+    <h2>1. Утренняя служба ISKCON</h2>
+    <p>Мангала-арати, Шри Гурваштака, Вибхавари-шеша, Нрисимха-пранама, Туласи-пуджа, 10 оскорблений, Шикшаштака, Према-дхвани (50 стихов).</p>
+    <div class="formats">
+      <a href="./morning-service/morning-service-ru-verses.html">📖 Шлоки и перевод</a>
+      <a href="./morning-service/morning-service-ru-interlinear.html">🔍 Связный подстрочник</a>
+      <a href="./morning-service/morning-service-ru-word-by-word.html">📝 Пословный разбор</a>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2>2. Молитвы месяца Карттика</h2>
+    <p>Гаура-арати, Прабхупада-падма Ставаках, Шад-Госвами-аштакам, Шачи-таная, Радха-крипа-катакша, Нанда-нандана, Дамодараштакам, Дипа-дана (67 стихов).</p>
+    <div class="formats">
+      <a href="./krtik-month/kartika-prayers-ru-verses.html">📖 Шлоки и перевод</a>
+      <a href="./krtik-month/kartika-prayers-ru-interlinear.html">🔍 Связный подстрочник</a>
+      <a href="./krtik-month/kartika-prayers-ru-word-by-word.html">📝 Пословный разбор</a>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2>3. Шри Кевалаштакам</h2>
+    <p>«Мадхурам мадхуребхйо ’пи» — высшая слава Святого Имени (Шрила Нилакантха Госвами, 8 стихов).</p>
+    <div class="formats">
+      <a href="./bhajana/kevalastakam-ru-verses.html">📖 Шлоки и перевод</a>
+      <a href="./bhajana/kevalastakam-ru-interlinear.html">🔍 Связный подстрочник</a>
+      <a href="./bhajana/kevalastakam-ru-word-by-word.html">📝 Пословный разбор</a>
+    </div>
+  </article>
+</main>
+
+<div class="spa-banner">
+  <h3>Интерактивный Банк Шлок в приложении</h3>
+  <p>Выбирайте отдельные шлоки, настраивайте круг джапы, копируйте ссылки и ищите по словам.</p>
+  <a class="spa-btn" href="../../#/shlokas">Открыть интерактивный банк шлок</a>
+</div>
+
+</body>
+</html>

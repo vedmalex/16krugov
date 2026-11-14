@@ -194,11 +194,11 @@ check("the pause before the next word previews that whole word", () => {
 check("a dash chain and a written word become one syllable per beat", () => {
   assert.deepEqual(beatsOf("ПА–БА–МА").map((beat) => beat.text), ["ПА", "БА", "МА"]);
   assert.deepEqual(syllablesOfWord("Бобёр"), ["Бо", "бёр"]);
-  assert.deepEqual(syllablesOfWord("бормотал"), ["бо", "рмо", "тал"]);
+  assert.deepEqual(syllablesOfWord("бормотал"), ["бор", "мо", "тал"]);
   assert.deepEqual(beatsOf("А–О–У").map((beat) => beat.text), ["А", "О", "У"]);
   const phrase = beatsOf("Бобёр бормотал");
-  assert.deepEqual(phrase.map((beat) => beat.text), ["Бо", "бёр", "бо", "рмо", "тал"]);
-  assert.deepEqual(phrase.filter((beat) => beat.wordStart).map((beat) => beat.text), ["Бо", "бо"]);
+  assert.deepEqual(phrase.map((beat) => beat.text), ["Бо", "бёр", "бор", "мо", "тал"]);
+  assert.deepEqual(phrase.filter((beat) => beat.wordStart).map((beat) => beat.text), ["Бо", "бор"]);
 });
 
 check("forward and back skip the countdown, the rest, and the gap before a word", () => {
