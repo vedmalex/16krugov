@@ -2,6 +2,15 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  advanceRound,
+  buildJapaSequence,
+  canTriggerNextRound,
+  hasVisibleDisplayLayer,
+  japaTime,
+  toggleSessionPause,
+  undoRoundCompletion,
+} from "../src/japa-model.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -100,5 +109,81 @@ assert.deepEqual(readRoute("#/shlokas"), { name: "shlokas" });
 assert.deepEqual(readRoute("#/shlokas?work=kevalastakam&verse=1"), { name: "shlokas" });
 assert.deepEqual(readRoute("#/train/vowels-1"), { name: "train", id: "vowels-1" });
 console.log("PASS route parser (japa, shlokas, train, home)");
+
+// 5. Check japa-model.ts sequence building, timers, undo, debounce, and display helpers
+const bhaktiRasayanaPath = path.resolve(__dirname, "../data/bhakti_rasayana.json");
+assert.ok(fs.existsSync(bhaktiRasayanaPath), "bhakti_rasayana.json exists");
+const rasayana = JSON.parse(fs.readFileSync(bhaktiRasayanaPath, "utf-8"));
+const roundsData = krugi.rounds;
+const rasayanaVerses = rasayana.verses ?? rasayana.rounds ?? [];
+
+for (const target of [4, 8, 16, 24, 64]) {
+  const canonSeq = buildJapaSequence(target, "canon", roundsData, rasayanaVerses);
+  assert.equal(canonSeq.length, target, `canon sequence length matches target ${target}`);
+  if (target === 4) {
+    assert.deepEqual(
+      canonSeq.map((u) => u.id),
+      ["lk-1", "lk-2", "lk-8", "lk-16"],
+      "target=4 uses canonical 4-round compression arc"
+    );
+  }
+  const rasayanaSeq = buildJapaSequence(target, "rasayana", roundsData, rasayanaVerses);
+  assert.equal(rasayanaSeq.length, target, `rasayana sequence length matches target ${target}`);
+  assert.ok(rasayanaSeq[0].id.startsWith("br-"), "rasayana starts with br- unit");
+}
+
+const customSeq = buildJapaSequence(
+  4,
+  "custom",
+  roundsData,
+  rasayanaVerses,
+  { 2: "lk-12", 4: "br-1" },
+  {
+    workTitle: "Шри Шикшаштака",
+    title: "Стих 3",
+    canonicalRef: "ШШ 3",
+    sanskrit: "тринад апи суничена",
+    translation: "Смиреннее травинки",
+    instruction: "Помни о смирении",
+    link: "#/shlokas?work=siksastakam&verse=3",
+  }
+);
+assert.equal(customSeq[0].id, "custom-tune-in");
+assert.equal(customSeq[1].id, "lk-12");
+assert.equal(customSeq[3].id, "br-1");
+console.log("PASS buildJapaSequence (canon/rasayana/custom/activeTuneIn across targets 4..64)");
+
+const startMs = 1_000_000;
+const initialSession = {
+  id: "s-1",
+  target: 4,
+  startedAt: startMs,
+  roundStartedAt: startMs,
+  elapsedMs: 0,
+  durations: [],
+  completed: false,
+};
+const pausedSession = toggleSessionPause(initialSession, startMs + 5000);
+assert.equal(pausedSession.roundStartedAt, null);
+assert.equal(pausedSession.elapsedMs, 5000);
+const resumedSession = toggleSessionPause(pausedSession, startMs + 9000);
+assert.equal(resumedSession.roundStartedAt, startMs + 9000);
+assert.equal(resumedSession.elapsedMs, 5000);
+
+const { nextSession, undoSnapshot } = advanceRound(resumedSession, startMs + 14000);
+assert.deepEqual(nextSession.durations, [10000]);
+assert.equal(nextSession.completed, false);
+const restored = undoRoundCompletion(undoSnapshot, startMs + 16000, false);
+assert.deepEqual(restored.durations, []);
+assert.equal(restored.elapsedMs, 10000);
+assert.equal(restored.roundStartedAt, startMs + 16000);
+
+assert.equal(japaTime(65000), "01:05");
+assert.equal(japaTime(3665000), "01:01:05");
+assert.equal(canTriggerNextRound(1000, 1500), false);
+assert.equal(canTriggerNextRound(1000, 1800), true);
+assert.equal(hasVisibleDisplayLayer({ sanskrit: false, translation: false, instruction: false }), false);
+assert.equal(hasVisibleDisplayLayer({ sanskrit: false, translation: true, instruction: false }), true);
+console.log("PASS japa-model state machine, undo, debounce, and display helpers");
 
 console.log("\nAll Japa and Shloka Bank verifications passed successfully!");
