@@ -273,7 +273,7 @@ h1 { font-family: "Noto Sans", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); 
 }
 .japa-source-line { margin: 0 0 6px; font-size: 0.82rem; }
 .japa-reading-scroll .sanskrit-text {
-  font-family: "Noto Serif", "Noto Sans", serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: calc(1.06rem * var(--reading-scale, 1));
   line-height: 1.65;
   white-space: pre-wrap;
