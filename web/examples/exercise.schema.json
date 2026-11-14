@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/articulation/exercise.schema.json",
+  "title": "Articulation Exercise",
+  "type": "object",
+  "required": ["id", "type", "category", "title", "difficulty"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "type": {"enum": ["sequence", "tongue_twister"]},
+    "category": {"enum": ["vowels", "consonants", "mixed", "tongue_twisters"]},
+    "title": {"type": "string", "minLength": 1},
+    "difficulty": {"type": "integer", "minimum": 1, "maximum": 5},
+    "group": {"type": "string"},
+    "elements": {"type": "array", "items": {"type": "string"}},
+    "text": {"type": "string"},
+    "segments": {"type": "array", "items": {"type": "string"}},
+    "phoneticTargets": {"type": "array", "items": {"type": "string"}},
+    "playback": {"type": "object"},
+    "generation": {"type": "object"}
+  }
+}

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "v13",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Полная цепочка гласных",
+    "difficulty": 2,
+    "elements": [
+      "А",
+      "И",
+      "Э",
+      "О",
+      "У",
+      "Ы",
+      "Е",
+      "Я",
+      "Ё",
+      "Ю"
+    ],
+    "note": null
+  },
+  {
+    "id": "v14",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Полная цепочка гласных в обратном порядке",
+    "difficulty": 2,
+    "elements": [
+      "Ю",
+      "Ё",
+      "Я",
+      "Е",
+      "Ы",
+      "У",
+      "О",
+      "Э",
+      "И",
+      "А"
+    ],
+    "note": null
+  },
+  {
+    "id": "v01",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Гласная лестница",
+    "difficulty": 1,
+    "elements": [
+      "А",
+      "Э",
+      "И",
+      "Ы",
+      "О",
+      "У"
+    ],
+    "note": null
+  },
+  {
+    "id": "v02",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Обратная лестница",
+    "difficulty": 1,
+    "elements": [
+      "У",
+      "О",
+      "Ы",
+      "И",
+      "Э",
+      "А"
+    ],
+    "note": null
+  },
+  {
+    "id": "v03",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Маятник А–И",
+    "difficulty": 1,
+    "elements": [
+      "А",
+      "И",
+      "А",
+      "И",
+      "А"
+    ],
+    "note": null
+  },
+  {
+    "id": "v04",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Маятник И–У",
+    "difficulty": 2,
+    "elements": [
+      "И",
+      "У",
+      "И",
+      "У",
+      "И"
+    ],
+    "note": null
+  },
+  {
+    "id": "v05",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Маятник И–Ы",
+    "difficulty": 2,
+    "elements": [
+      "И",
+      "Ы",
+      "И",
+      "Ы",
+      "И"
+    ],
+    "note": null
+  },
+  {
+    "id": "v06",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Маятник А–О",
+    "difficulty": 2,
+    "elements": [
+      "А",
+      "О",
+      "А",
+      "О",
+      "А"
+    ],
+    "note": null
+  },
+  {
+    "id": "v07",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Маятник Э–У",
+    "difficulty": 3,
+    "elements": [
+      "Э",
+      "У",
+      "Э",
+      "У",
+      "Э"
+    ],
+    "note": null
+  },
+  {
+    "id": "v08",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Перестановки А–О–У",
+    "difficulty": 3,
+    "elements": [
+      "А–О–У",
+      "А–У–О",
+      "О–А–У",
+      "О–У–А",
+      "У–А–О",
+      "У–О–А"
+    ],
+    "note": null
+  },
+  {
+    "id": "v09",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Перестановки И–Э–Ы",
+    "difficulty": 3,
+    "elements": [
+      "И–Э–Ы",
+      "И–Ы–Э",
+      "Э–И–Ы",
+      "Э–Ы–И",
+      "Ы–И–Э",
+      "Ы–Э–И"
+    ],
+    "note": null
+  },
+  {
+    "id": "v10",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Йотированные гласные",
+    "difficulty": 4,
+    "elements": [
+      "Я–А–Я–А",
+      "Ё–О–Ё–О",
+      "Ю–У–Ю–У",
+      "Е–Э–Е–Э",
+      "Я–Ё–Ю–Е",
+      "Е–Ю–Ё–Я",
+      "А–Я–О–Ё–У–Ю–Э–Е"
+    ],
+    "note": null
+  },
+  {
+    "id": "v11",
+    "type": "sequence",
+    "category": "vowels",
+    "title": "Сверхцепочка",
+    "difficulty": 4,
+    "elements": [
+      "А–И–У–Э–О–Ы",
+      "Ы–О–Э–У–И–А",
+      "А–У–Э–Ы–И–О",
+      "О–И–Ы–А–У–Э"
+    ],
+    "note": null
+  },
+  {
+    "id": "v12",
+    "type": "sequence",
+    "category": "mixed",
+    "title": "Смешанная матрица",
+    "difficulty": 4,
+    "elements": [
+      "ПА–БО–МУ–ФЫ–ВЭ–ПИ",
+      "ТА–ДО–НУ–ЛЫ–РЭ–ТИ",
+      "КА–ГО–ХУ–ГЫ–КЭ–ГИ",
+      "СА–ЗО–ЦУ–СЫ–ЗЭ–СИ",
+      "РА–ЛО–ШУ–ЖИ–ЧЕ–ЩА"
+    ],
+    "note": "Некоторые комбинации — искусственные тренировочные слоги."
+  }
+]

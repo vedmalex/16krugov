@@ -1,0 +1,143 @@
+[
+  {
+    "id": "daily-18",
+    "title": "Ежедневная артикуляционная разминка",
+    "durationMinutesTarget": 18,
+    "steps": [
+      {
+        "title": "Гласные и губные",
+        "minutes": 4,
+        "exerciseIds": [
+          "v13",
+          "v14",
+          "v01",
+          "c01-syllables",
+          "v04",
+          "c01-switches",
+          "c01-phrase"
+        ]
+      },
+      {
+        "title": "Переднеязычные и заднеязычные",
+        "minutes": 4,
+        "exerciseIds": [
+          "c03-syllables",
+          "c04-syllables",
+          "c03-switches",
+          "c04-switches",
+          "c03-phrase"
+        ]
+      },
+      {
+        "title": "Свистящие и шипящие",
+        "minutes": 4,
+        "exerciseIds": [
+          "c05-syllables",
+          "c06-syllables",
+          "c05-switches",
+          "c06-switches",
+          "c06-phrase"
+        ]
+      },
+      {
+        "title": "Сонорные и переключения",
+        "minutes": 4,
+        "exerciseIds": [
+          "c07-syllables",
+          "c08-syllables",
+          "c07-switches",
+          "c10-switches",
+          "c07-phrase"
+        ]
+      },
+      {
+        "title": "Скороговорка",
+        "minutes": 2,
+        "exerciseIds": [
+          "tt-10"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "quick-5",
+    "title": "Быстрая разминка",
+    "durationMinutesTarget": 5,
+    "steps": [
+      {
+        "title": "Гласные и губные",
+        "minutes": 2,
+        "exerciseIds": [
+          "v13",
+          "v14",
+          "v01",
+          "c01-syllables",
+          "c01-switches"
+        ]
+      },
+      {
+        "title": "Свистящие и сонорные",
+        "minutes": 2,
+        "exerciseIds": [
+          "c05-syllables",
+          "c07-syllables",
+          "c07-phrase"
+        ]
+      },
+      {
+        "title": "Скороговорка",
+        "minutes": 1,
+        "exerciseIds": [
+          "tt-10"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "clusters",
+    "title": "Сложные сочетания и переключения",
+    "durationMinutesTarget": 12,
+    "steps": [
+      {
+        "title": "Гласные и губные",
+        "minutes": 3,
+        "exerciseIds": [
+          "v13",
+          "v14",
+          "v01",
+          "v08",
+          "c01-syllables",
+          "c02-switches"
+        ]
+      },
+      {
+        "title": "Стечения согласных",
+        "minutes": 4,
+        "exerciseIds": [
+          "c03-syllables",
+          "c04-switches",
+          "c09-syllables",
+          "c09-switches",
+          "c09-phrase"
+        ]
+      },
+      {
+        "title": "Свистящие и сонорные",
+        "minutes": 3,
+        "exerciseIds": [
+          "c05-syllables",
+          "c06-switches",
+          "c07-switches",
+          "c10-phrase"
+        ]
+      },
+      {
+        "title": "Скороговорка",
+        "minutes": 2,
+        "exerciseIds": [
+          "tt-03"
+        ]
+      }
+    ]
+  }
+]

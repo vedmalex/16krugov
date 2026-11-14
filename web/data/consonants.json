@@ -1,0 +1,292 @@
+[
+  {
+    "id": "c01",
+    "type": "group",
+    "category": "consonants",
+    "slug": "labial",
+    "title": "Губные",
+    "letters": "П–Б–М",
+    "description": "Смыкание губ и переключение между глухим, звонким и носовым звуком.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ПА–БА–МА · ПО–БО–МО · ПУ–БУ–МУ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "ПА–БА–ПА–МА · БРА–ПРА–БРА–ПРА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Бобёр бормотал, пока Парамон перебирал бобы."
+      }
+    ]
+  },
+  {
+    "id": "c02",
+    "type": "group",
+    "category": "consonants",
+    "slug": "labiodental",
+    "title": "Губно-зубные",
+    "letters": "Ф–В",
+    "description": "Контакт нижней губы с верхними зубами, переключение звонкости.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ФА–ВА · ФО–ВО · ФУ–ВУ · ФЫ–ВЫ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "ФРА–ВРА · ФЛА–ВЛА · ФРА–ВЛА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Фрол вывернул фартук, Варвара фартук Фролу выправила."
+      }
+    ]
+  },
+  {
+    "id": "c03",
+    "type": "group",
+    "category": "consonants",
+    "slug": "coronal",
+    "title": "Переднеязычные смычные и носовые",
+    "letters": "Т–Д–Н",
+    "description": "Точное касание языком области за верхними зубами.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ТА–ДА–НА · ТО–ДО–НО · ТУ–ДУ–НУ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "ТРА–ДРА–ТРА · ДНА–ТНА–ДНА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Трое трудников трижды дёрнули драную дратву."
+      }
+    ]
+  },
+  {
+    "id": "c04",
+    "type": "group",
+    "category": "consonants",
+    "slug": "velar",
+    "title": "Заднеязычные",
+    "letters": "К–Г–Х",
+    "description": "Работа задней части языка, смена смычки и щелевого звука.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "КА–ГА–ХА · КО–ГО–ХО · КУ–ГУ–ХУ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "КРА–ГРА–ХРА · КЛА–ГЛА–ХЛА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Григорий громко грохотал горохом, пока Харитон хрустел сухарями."
+      }
+    ]
+  },
+  {
+    "id": "c05",
+    "type": "group",
+    "category": "consonants",
+    "slug": "sibilants",
+    "title": "Свистящие",
+    "letters": "С–З–Ц",
+    "description": "Воздушная струя и переключение звонкости и аффрикаты.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "СА–ЗА–ЦА · СО–ЗО–ЦО · СУ–ЗУ–ЦУ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "СА–ЦА–ЗА–СА · СЦА–ЗЦА–СЦА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Соня с Севой сеяли семена, Зоя с Цилей сцеживали сок."
+      }
+    ]
+  },
+  {
+    "id": "c06",
+    "type": "group",
+    "category": "consonants",
+    "slug": "hushers",
+    "title": "Шипящие",
+    "letters": "Ш–Ж–Ч–Щ",
+    "description": "Переключение шипящих и аффрикаты.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ША–ЖА–ЧА–ЩА · ШО–ЖО–ЧО–ЩО"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "ША–ЩА–ЧА–ЖА · ЖА–ЧА–ЩА–ША"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Шустрый шмель жужжал в чаще, щурясь на чёрные шишки."
+      }
+    ]
+  },
+  {
+    "id": "c07",
+    "type": "group",
+    "category": "consonants",
+    "slug": "sonorants",
+    "title": "Сонорные",
+    "letters": "Р–Л–Й",
+    "description": "Переключение вибранта, бокового и среднеязычного звуков.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "РА–ЛА–Я · РО–ЛО–Ё · РУ–ЛУ–Ю"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "РА–ЛА–РА–ЛА · РЛА–ЛРА–РЛА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Лара рулоны разложила, Роман Ларины рулоны развернул."
+      }
+    ]
+  },
+  {
+    "id": "c08",
+    "type": "group",
+    "category": "consonants",
+    "slug": "soft-hard",
+    "title": "Твёрдые и мягкие",
+    "letters": "Т–ТЬ, Д–ДЬ, Л–ЛЬ, Н–НЬ",
+    "description": "Переключение мягкости согласных.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ТА–ТЯ · ДА–ДЯ · ЛА–ЛЯ · НА–НЯ"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "ТА–ТЯ–ДА–ДЯ · ЛА–ЛЯ–НА–НЯ"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Таня тянет тетрадь, Даня дёргает дядину дверь."
+      }
+    ]
+  },
+  {
+    "id": "c09",
+    "type": "group",
+    "category": "consonants",
+    "slug": "clusters",
+    "title": "Сложные стечения",
+    "letters": "ТР–ДР–СТР–ЗДР",
+    "description": "Стечения согласных без вставочных гласных.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "ТРА–ДРА · СТРА–ЗДРА · СТРО–ЗДРО"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "СТРА–ДРА–ЗДРА–ТРА · ВСТРА–ВЗДРА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Строгий строитель вздрогнул, встретив вздорного дровосека."
+      }
+    ]
+  },
+  {
+    "id": "c10",
+    "type": "group",
+    "category": "consonants",
+    "slug": "mixed",
+    "title": "Смешанные переключения",
+    "letters": "Р–Л–С–Ш–Ж–Ч–Щ",
+    "description": "Одновременная работа нескольких артикуляционных механизмов.",
+    "levels": [
+      {
+        "id": "syllables",
+        "title": "Слоги",
+        "difficulty": 1,
+        "text": "РА–ЛА–ША–ЖА · СА–ША–ЧА–ЩА"
+      },
+      {
+        "id": "switches",
+        "title": "Переходы",
+        "difficulty": 3,
+        "text": "КРА–КЛА–ШРА–ЖРА · СТРА–ШТА–ЧРА"
+      },
+      {
+        "id": "phrase",
+        "title": "Фраза",
+        "difficulty": 4,
+        "text": "Шуршали шёлковые шали, Лара ловко раскладывала разноцветные рулоны."
+      }
+    ]
+  }
+]
